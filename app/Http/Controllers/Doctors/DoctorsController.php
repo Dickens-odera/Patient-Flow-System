@@ -15,5 +15,6 @@ class DoctorsController extends Controller
     public function index()
     {
         //show the dashboard
+        return view('doctor.dashboard');
     }
 }
