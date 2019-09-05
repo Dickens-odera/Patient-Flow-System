@@ -9,7 +9,7 @@ class NursesLoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest:nurse');
+        $this->middleware('guest:nurse',['except'=>['logout']]);
     }
     //show the login form to the nurse
     public function showLoginForm()

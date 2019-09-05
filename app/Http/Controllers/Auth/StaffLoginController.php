@@ -21,7 +21,7 @@ class StaffLoginController extends Controller
     {
         //some logic should go here
         //perform data validation on the incoming request
-        $this>validate($request, array(
+        $this->validate($request, array(
             'email'=>'required|email',
             'password'=>'required'
         ));
@@ -40,6 +40,6 @@ class StaffLoginController extends Controller
     public function logout()
     {
         Auth::guard('staff')->logout();
-        return redirect()->route('staf.login');
+        return redirect()->route('staff.login');
     }
 }
