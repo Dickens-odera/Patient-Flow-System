@@ -26,7 +26,7 @@ class AdminLoginController extends Controller
         ]);
         //use the Auth facade to login the admin using the credentials
         //the attempt function automatically Hashes the password, so there is no need of hashing it gain
-        if(Auth::guard('admin')->attempt(['email'=>$request->email,'password'=>$request->password]))
+        if(Auth::guard('admin')->attempt(['email'=>$request->email,'password'=>$request->password], $request->remember))
         { 
             //if successfully logged in, redirect to their intended page
             return redirect()->intended(route('admin.dashboard'));
