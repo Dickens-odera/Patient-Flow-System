@@ -1,1 +1,1 @@
-Hello {{ Auth::user()->name }}
+Hello <strong>{{ Auth::user()->name }}</strong> 
