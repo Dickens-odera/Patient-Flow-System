@@ -17,9 +17,24 @@ class StaffLoginController extends Controller
         return view('auth.staff-login');
     }
     //perform the login function
-    public function login()
+    public function login(Request $request)
     {
         //some logic should go here
+        //perform data validation on the incoming request
+        $this>validate($request, array(
+            'email'=>'required|email',
+            'password'=>'required'
+        ));
+        //login the staff and show them their dashboard upon successful login
+        if(Auth::guard('staff')->attempt(['email'=>$request->email, 'password'=>$request->password], $request->remember))
+        {
+            return redirect()->intended(route('staff.dashboard'));
+        }
+        else
+        {
+            //if the login attempt failed
+            return redirect()->back()->withInput($request->only('email','remember'));
+        }
     }
     //logout the staff and return them back to their login page
     public function logout()

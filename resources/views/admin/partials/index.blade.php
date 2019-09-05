@@ -293,9 +293,9 @@
                 </div>
                 <div class="pull-right">
                   {{-- <a href="#" class="btn btn-default btn-flat">Sign out</a> --}}
-                  <a class="btn btn-default btn-flat" href="{{ route('admin.logout') }}"
-                  onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
+                  <a class="btn btn-default btn-flat" href="{{ route('admin.logout') }}">
+                  {{-- onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();"> --}}
                    {{ __('Sign Out') }}
                </a>
                 </div>

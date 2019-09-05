@@ -17,9 +17,21 @@ class NursesLoginController extends Controller
         return view('auth.nurses-login');
     }
     //perform the login function
-    public function login()
+    public function login(Request $request)
     {
         //some logic should go here
+        $this->validate($request, array(
+            'email'=>'required|email',
+            'password'=>'required'
+        ));
+        if(Auth::guard('nurse')->attempt(['email'=>$request->email, 'password'=>$request->password], $request->remember))
+        {
+            return redirect()->intended(route('nurse.dashboard'));
+        }
+        else
+        {
+            return redirect()->back()->withInput($request->only('email','remember'));
+        }
     }
     //logout the nurse and redirect them back to the nurses login page
     public function logout()
