@@ -1,1 +1,4 @@
-hello  <strong>{{ Auth::user()->name }}</strong>
+@include('admin.partials.includes.intro')
+<body class="hold-transition skin-blue sidebar-mini">
+@include('admin.partials.includes.header')
+@include('admin.partials.includes.sidebar')
