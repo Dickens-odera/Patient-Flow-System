@@ -31,6 +31,8 @@ Route::prefix('admin')->group(function()
     Route::get('/doctors','Admin\AdminController@showDoctorsForm')->name('admin.doctor.add');
     Route::post('/doctor','Admin\AdminController@addNewDoctor')->name('admin.doctor.submit');
     Route::get('/doctors/all','Admin\AdminController@viewAllDoctors')->name('admin.doctors.view.all');
+    Route::get('/doctor/update','Admin\AdminController@showDrEditForm')->name('admin.doctor.edit.form');
+    Route::post('/doctor/update','Admin\AdminController@updateDrInformation')->name('admin.doctor.update');
     //nurses
     Route::get('/nurses','Admin\AdminController@showNursesForm')->name('admin.nurses.add');
     Route::post('/nurses','Admin\AdminController@addNewNurse')->name('admin.nurse.submit');

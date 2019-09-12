@@ -25,8 +25,8 @@
                                     <td>{{ $value->email }}</td>
                                     <td>{{ $value->phone }}</td>
                                     <td class="btn-group btn-group-sm">
-                                        <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                                        <a href="#" class="btn btn-sm btn-danger" onclick="if(!confirm('Are you sure you want to delete'.' '.$value->name.' '.'?'))return false"><i class="fa fa-trash"></i> Delete</a>
+                                        <a href="{{ route('admin.doctor.edit.form', ['id'=>$value->id]) }}" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                                        <a href="#" class="btn btn-sm btn-danger" onclick="if(! confirm('Are you sure you want to delete this particular record?')){return false}"><i class="fa fa-trash"></i> Delete</a>
                                     </td>
                                 </tbody>
                             @endforeach
