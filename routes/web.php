@@ -26,6 +26,22 @@ Route::prefix('admin')->group(function()
     Route::post('/adminlogin','Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/logout','Auth\AdminLoginController@logout')->name('admin.logout');
     Route::get('/dashboard','Admin\AdminController@index')->name('admin.dashboard');
+    //doctors
+    Route::get('/doctors','Admin\AdminController@showDoctorsForm')->name('admin.doctor.add');
+    Route::post('/doctor','Admin\AdminController@addNewDoctor')->name('admin.doctor.submit');
+    //nurses
+    Route::get('/nurses','Admin\AdminController@showNursesForm')->name('admin.nurses.add');
+    Route::post('/nurses','Admin\AdminController@addNewNurse')->name('admin.nurse.submit');
+    //non medical staff
+    Route::get('/staff','Admin\AdminController@showStaffForm')->name('admin.staff.add');
+    Route::post('/staff','Admin\AdminController@addNewStaff')->name('admin.staff.submit');
+    //patients
+    Route::get('/patients','Admin\AdminController@viewAllPatients')->name('admin.patients.view.all');
+    //departments
+    Route::get('/departements','Admin\AdminController@showDepartmentsForm')->name('admin.departement.add');
+    Route::post('/departments','Admin\AdminController@addNewDepartment')->name('admin.department.submit');
+    //mail
+    Route::get('mail','Admin\AdminController@showAllMail')->name('admin.mails.view.all');
 });
 //doctors routes
 Route::prefix('doctors')->group(function()
