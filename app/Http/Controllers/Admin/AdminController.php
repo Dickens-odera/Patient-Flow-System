@@ -24,6 +24,13 @@ class AdminController extends Controller
     {
         //show the administrator their profile
     }
+    /**************************** DOCTORS SECTION OF THE ADMIN *************************/
+    //show a list of all doctors
+    public function viewAllDoctors()
+    {
+        $doctors = Doctors::latest()->paginate(1);
+        return view('admin.doctor.index', compact('doctors'));
+    }
     //show a form to enable the admin to add a new doctor
     public function showDoctorsForm()
     {
@@ -91,4 +98,5 @@ class AdminController extends Controller
             }
         }
     }
+    /*************************************** END OF DOCTORS SECTION ***********************************************/
 }

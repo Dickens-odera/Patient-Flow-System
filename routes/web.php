@@ -30,6 +30,7 @@ Route::prefix('admin')->group(function()
     //doctors
     Route::get('/doctors','Admin\AdminController@showDoctorsForm')->name('admin.doctor.add');
     Route::post('/doctor','Admin\AdminController@addNewDoctor')->name('admin.doctor.submit');
+    Route::get('/doctors/all','Admin\AdminController@viewAllDoctors')->name('admin.doctors.view.all');
     //nurses
     Route::get('/nurses','Admin\AdminController@showNursesForm')->name('admin.nurses.add');
     Route::post('/nurses','Admin\AdminController@addNewNurse')->name('admin.nurse.submit');

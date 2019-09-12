@@ -71,7 +71,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="{{ route('admin.doctor.add') }}"><i class="fa fa-circle-o"></i> New</a></li>
-                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
+                <li><a href="{{ route('admin.doctors.view.all') }}"><i class="fa fa-circle-o"></i> View All</a></li>
                 <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
                 <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
               </ul>
