@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Doctors extends Authenticatable
 {
     use Notifiable;
+    //the database table 
+    protected $tables = 'doctors';
     protected $guard = 'doctor';
     /**
      * The attributes that are mass assignable.
@@ -16,7 +18,7 @@ class Doctors extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','phone','evartar'
     ];
 
     /**

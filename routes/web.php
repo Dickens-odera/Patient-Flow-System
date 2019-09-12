@@ -26,6 +26,7 @@ Route::prefix('admin')->group(function()
     Route::post('/adminlogin','Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/logout','Auth\AdminLoginController@logout')->name('admin.logout');
     Route::get('/dashboard','Admin\AdminController@index')->name('admin.dashboard');
+    Route::get('/profile','Admin\AdminController@profile')->name('admin.profile');
     //doctors
     Route::get('/doctors','Admin\AdminController@showDoctorsForm')->name('admin.doctor.add');
     Route::post('/doctor','Admin\AdminController@addNewDoctor')->name('admin.doctor.submit');
