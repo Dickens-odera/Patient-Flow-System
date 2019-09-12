@@ -1,7 +1,7 @@
 @include('admin.partials.includes.intro')
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
-  @include('admin.partials.includes.header')
+  {{-- @include('admin.partials.includes.header') --}}
   @if(Auth::guard('admin')->check())
         @include('admin.partials.includes.sidebar')
   @endif

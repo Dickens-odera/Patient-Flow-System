@@ -251,7 +251,7 @@
                 </div>
                 <div class="pull-right">
                   {{-- <a href="#" class="btn btn-default btn-flat">Sign out</a> --}}
-                      <a class="btn btn-default btn-flat" href="{{ route('patient.logout') }}">
+                      <a class="btn btn-default btn-flat" href="{{ route('staff.logout') }}">
                   {{-- onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();"> --}}
                    {{ __('Sign Out') }}

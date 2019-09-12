@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@include('patients.header')
 @section('content')
    <div class="box">
        <div class="box-header text-uppercase bg-info text-white"><h4>{{ __('Patient Dashboard') }}</h4></div>
