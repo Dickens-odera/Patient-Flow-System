@@ -251,7 +251,21 @@
                     </div>
                     <div class="pull-right">
                       {{-- <a href="#" class="btn btn-default btn-flat">Sign out</a> --}}
-                      <a class="btn btn-default btn-flat" href="{{ route('admin.logout') }}">
+                      @if(Auth::guard('admin')->check())
+                          <a class="btn btn-default btn-flat" href="{{ route('admin.logout') }}">
+                      @endif
+                      @if(Auth::guard('doctor')->check())
+                          <a class="btn btn-default btn-flat" href="{{ route('doctor.logout') }}">
+                      @endif
+                      @if(Auth::guard('staff')->check())
+                          <a class="btn btn-default btn-flat" href="{{ route('staff.logout') }}">
+                      @endif
+                      @if(Auth::guard('patient')->check())
+                          <a class="btn btn-default btn-flat" href="{{ route('patient.logout') }}">
+                      @endif
+                      @if(Auth::guard('nurse')->check())
+                          <a class="btn btn-default btn-flat" href="{{ route('nurse.logout') }}">
+                      @endif
                       {{-- onclick="event.preventDefault();
                                     document.getElementById('logout-form').submit();"> --}}
                        {{ __('Sign Out') }}
