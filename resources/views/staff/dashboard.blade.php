@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
     <div class="box">
-        <div class="box-header text-uppercase bg-info">{{ __('Staff Dashboard') }}</div>
+        <div class="box-header text-uppercase bg-info"><h4>{{ __('Staff Dashboard') }}</h4></div>
         <div class="box-body">
             <!-- body content should go here -->
         </div>
