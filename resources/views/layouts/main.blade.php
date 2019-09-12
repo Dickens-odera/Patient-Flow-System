@@ -15,7 +15,7 @@
         @include('doctor.sidebar')
   @endif
   @if(Auth::guard('nurse')->check())
-        @include('nurse.sidebar')
+        @include('nurses.sidebar')
   @endif  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
