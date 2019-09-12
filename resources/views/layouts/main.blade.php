@@ -2,8 +2,21 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
   @include('admin.partials.includes.header')
- @include('admin.partials.includes.sidebar')
-
+  @if(Auth::guard('admin')->check())
+        @include('admin.partials.includes.sidebar')
+  @endif
+  @if(Auth::guard('patient')->check())
+        @include('patients.sidebar')
+  @endif
+  @if(Auth::guard('staff')->check())
+        @include('staff.sidebar')
+  @endif
+  @if(Auth::guard('doctor')->check())
+        @include('doctor.sidebar')
+  @endif
+  @if(Auth::guard('nurse')->check())
+        @include('nurse.sidebar')
+  @endif  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
