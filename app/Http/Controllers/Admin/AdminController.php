@@ -71,7 +71,8 @@ class AdminController extends Controller
             if($pwd !== $confirm_pwd)
             {
                 //if the password and the confirmation pasword do not match
-                return redirect()->back()->withInput($request->only('name','email','phone'))->with('error','Password mismatch, try again');
+                $request->session()->flash('error','Password mismatch, try again');
+                return redirect()->back()->withInput($request->only('name','email','phone'));
             }
             else
             {
@@ -94,12 +95,14 @@ class AdminController extends Controller
             if($doctor->save())
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
-                return redirect()->back()->with('success','The doctor has been added successfully');
+                $request->session()->flash('success','The doctor has been added successfully');
+                return redirect()->back();
             }
             else
             {
                 //if the process of adding the new doctor failed
-                return redirect()->back()->with('error','Failed to add the new doctor, try again');
+                $request->session()->flash('error','Failed to add the new doctor, try again');
+                return redirect()->back();
             }
         }
     }
@@ -111,14 +114,16 @@ class AdminController extends Controller
         if(!$id)
         {
             //if the id is not provided
-            return redirect()->back()->with('error','Invalid request');
+            $request->session()->flash('error','Invalid request');
+            return redirect()->back();
         }
         else
         {
             $validator = Validator::make($request->all(), ['id'=>'required']);
             if($validator->fails())
             {
-                return redirect()->back()->with('error',$validator->errors());
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
             }
             else
             {
@@ -142,7 +147,8 @@ class AdminController extends Controller
         //if the validation failed
         if($validator->fails())
         {
-            return redirect()->back()->with('error', $validator->errors());
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back();
         }
         else
         {
@@ -151,7 +157,8 @@ class AdminController extends Controller
             if(!$id)
             {
                 //if the doctor's id is not provided
-                return redirect()->back()->with('error','Invalid data');
+                $request->session()->flash('error','Invalid request');
+                return redirect()->back();
             }
             else
             {
@@ -183,12 +190,14 @@ class AdminController extends Controller
                 if($doctor->save())
                 {
                     //if the doctor's information are sccessfully updated
-                    return redirect()->back()->with('success','Doctor`s profile updated succesffuly');
+                    $request->session()->flash('success','Doctor`s profile updated succesffuly');
+                    return redirect()->back();
                 }
                 else
                 {
                     //if the profile was not updated
-                    return redirect()->back()->withInput($request->only('name','email','avartar'))->with('error','Failed to update dotor profile, try again');
+                    $request->session()->flash('error','Failed to update doctor profile, try again');
+                    return redirect()->back()->withInput($request->only('name','email','avartar'));
                 }
             }
         }
@@ -201,7 +210,8 @@ class AdminController extends Controller
         if(!$id)
         {
             //if the id is not attached to the request
-            return redirect()->back()->with('error','Invalid request');
+            $request->session()->flash('error','Invalid request');
+            return redirect()->back();
         }
         else
         {
@@ -211,12 +221,14 @@ class AdminController extends Controller
             if(Doctors::where('id', $id)->first()->delete())
             {
                 //if the delete request was successfull, give feedback with a success message
-                return redirect()->back()->with('success','Dr information deleted successfully');
+                $request->session()->flash('success','Dr information deleted successfully');
+                return redirect()->back();
             }
             else
             {
                 //if the request failed
-                return redirect()->back()->with('error','Failed to delete the Dr information, try again');
+                $request->session()->flash('error','Failed to delete the Dr information, try again');
+                return redirect()->back();
             }
         }
     }
@@ -245,7 +257,8 @@ class AdminController extends Controller
         if($validator->fails())
         {
             //redirect the user to the same page with an errror message
-            return redirect()->back()->with('error',$validator->errors());
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back();
         }
         //if the validation rules have been met, proceed to get the request data from the form
         $nurse = new Nurse;
