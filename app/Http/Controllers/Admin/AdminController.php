@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use App\Doctors;
 use App\Nurse;
 use App\Departments;
+use App\Patients;
 use Image;
 
 class AdminController extends Controller
@@ -550,4 +551,13 @@ class AdminController extends Controller
     }
 
     /*********************** END OF ADMIN DEPARTMENTS FUNCTIONALITY */
+
+    /*********************** ADMIN-PATIENTS FUNCTIONALITIES ***********************/
+    //view all the patients in the system
+    public function viewAllPatients()
+    {
+        $patients = Patients::latest()->paginate(10);
+        return view('admin.patients.index', compact('patients'));
+    }
+    /*********************** END ADMIN-PATIENTS FUNCTIONALITIES *********************/
 }

@@ -48,10 +48,10 @@
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-                <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-                <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-                <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+                {{-- <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li> --}}
+                {{-- <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li> --}}
+                {{-- <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li> --}}
+                {{-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> --}}
               </ul>
             </li>
             {{-- <li>
@@ -73,8 +73,8 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('admin.doctor.add') }}"><i class="fa fa-circle-o"></i> New</a></li>
                 <li><a href="{{ route('admin.doctors.view.all') }}"><i class="fa fa-circle-o"></i> View All</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                {{-- <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li> --}}
+                {{-- <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> --}}
               </ul>
             </li>
             <li class="treeview">
@@ -88,10 +88,10 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('admin.nurses.add') }}"><i class="fa fa-circle-o"></i> New</a></li>
                 <li><a href="{{ route('admin.nurses.view.all') }}"><i class="fa fa-circle-o"></i> View All</a></li>
-                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> Buttons</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>
-                <li><a href="pages/UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li>
-                <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li>
+                {{-- <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> Buttons</a></li> --}}
+                {{-- <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li> --}}
+                {{-- <li><a href="pages/UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li> --}}
+                {{-- <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li> --}}
               </ul>
             </li>
             <li class="treeview">
@@ -104,7 +104,7 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('admin.department.add') }}"><i class="fa fa-circle-o"></i> New</a></li>
                 <li><a href="{{ route('admin.departments.view.all')}}"><i class="fa fa-circle-o"></i> View All</a></li>
-                <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
+                {{-- <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li> --}}
               </ul>
             </li>
             <li class="treeview">
@@ -115,8 +115,8 @@
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>
+                <li><a href="{{ route('admin.patients.view.all') }}"><i class="fa fa-circle-o"></i> View All</a></li>
+                {{-- <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li> --}}
               </ul>
             </li>
             <li>
