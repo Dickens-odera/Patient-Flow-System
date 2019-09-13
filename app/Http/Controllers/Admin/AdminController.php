@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use App\Doctors;
 use App\Nurse;
 use Image;
+
 class AdminController extends Controller
 {
     //declare the authnetication guard
@@ -254,7 +256,8 @@ class AdminController extends Controller
         if($pwd !== $confirm_pwd)
         {
             //throw an error
-            return redirect()->back()->with('error','Password mismatch');
+            $request->session()->flash('error','Password mismatch');
+            return redirect()->back();
         }
         else
         {
@@ -281,12 +284,14 @@ class AdminController extends Controller
         if($nurse->save())
         {
             //if the nurse was successfully added into the database, show a success message
-            return redirect()->back()->with('success','Nurse '.$request->name.' '.'added successfully');
+            $request->session()->flash('success','Nurse '.$request->name.' '.'added successfully');
+            return redirect()->back();
         }
         else
         {
             //if the request to add a new nurse fails, throw an error and return the admin to the same form
-            return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error','Failed to add the nurse, try again');
+            $request->session()->flash('error','Failed to add the nurse, try again');
+            return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
         }
     }
     //list all the nurses
@@ -303,7 +308,8 @@ class AdminController extends Controller
         if(!$id)
         {
             //if not so,
-            return redirect()->back()->with('error','Invalid request');
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
         }
         else
         {
@@ -320,7 +326,8 @@ class AdminController extends Controller
         $id = $request->id;
         if(!$id)
         {
-            return redirect()->back()->with('error','Invalid request');
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
         }
         //validation rules
         $nurse_validation_rules = array(
@@ -334,7 +341,8 @@ class AdminController extends Controller
         //if not, throw an error message with the missing rules
         if($validator->fails())
         {
-            return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error',$validator->errors());
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
         }
         else
         {
@@ -363,12 +371,39 @@ class AdminController extends Controller
             if($nurse->save())
             {
                 //if the updation process was successfull
-                return redirect()->to(route('admin.nurses.view.all'))->with('success','Nurse information updated successfully');
+                $request->session()->flash('success','Nurse information updated successfully');
+                return redirect()->to(route('admin.nurses.view.all'));
             }
             else
             {
                 //if the updatio process failed
-                return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error','Failed to update nurse information, try again');
+                $request->session()->flash('error','Failed to update nurse information, try again');
+                return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
+            }
+        }
+    }
+    //delete nurse information
+    public function deleteNurseInformation(Request $request, $nurse_id = null)
+    {
+        //attach an id to the request
+        $nurse_id= $request->id;
+        if(!$nurse_id)
+        {
+            //if the id is not attached to the request
+            $request->session()->flash('error','Invalid request');
+            return redirect()->back();
+        }
+        else
+        {
+            //validate the request
+            $this->validate($request, ['id'=>'required']);
+            //delete the nurse
+            if(Nurse::where('id',$nurse_id)->first()->delete())
+            {
+                //if the delete request was succssfull
+                //perform future backup
+                $request->session()->flash('success','Nurse deleted successfuly');
+                return redirect()->to(route('admin.nurses.view.all'));
             }
         }
     }
