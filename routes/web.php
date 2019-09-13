@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 //admin routes
 Route::prefix('admin')->group(function()
 {   
+    //admi personal urls
     Route::get('/adminlogin','Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('/adminlogin','Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/logout','Auth\AdminLoginController@logout')->name('admin.logout');
@@ -37,6 +38,10 @@ Route::prefix('admin')->group(function()
     //nurses
     Route::get('/nurses','Admin\AdminController@showNursesForm')->name('admin.nurses.add');
     Route::post('/nurses','Admin\AdminController@addNewNurse')->name('admin.nurse.submit');
+    Route::get('/nurses/all','Admin\AdminController@viewAllNurses')->name('admin.nurses.view.all');
+    Route::get('/nurse/update','Admin\AdminController@showNurseEditForm')->name('admin.nurse.edit.form');
+    Route::post('/nurse/update','Admin\AdminController@updateNurseInformation')->name('admin.nurse.update');
+    Route::get('/nurse/delete','Admin\AdminController@deleteNurseInformation')->name('admin.nurse.delete');
     //non medical staff
     Route::get('/staff','Admin\AdminController@showStaffForm')->name('admin.staff.add');
     Route::post('/staff','Admin\AdminController@addNewStaff')->name('admin.staff.submit');

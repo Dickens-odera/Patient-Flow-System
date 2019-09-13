@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Doctors;
+use App\Nurse;
 use Image;
 class AdminController extends Controller
 {
@@ -46,7 +47,7 @@ class AdminController extends Controller
             'password'=>'required',
             'confirm_password'=>'required',
             'phone'=>'required|phone|max:12|unique:doctors',
-            'avartar'=>'nullable|mimes:jpeg,jpg,png|max:2048'
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
         );
         //perform data validation on the incoming requests
         $validator = Validator::make($request->all(), $rules);
@@ -130,7 +131,7 @@ class AdminController extends Controller
             'name'=>'required',
             'email'=>'required',
             'phone'=>'required|phone|max:12',
-            'avartar'=>'nullable|mimes:jpeg,jpg,png|max:2048'
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
         );
         //perfor validation on the above rules to ensure that they are met before perfoming any action
         $validator = Validator::make($request->all(),$rules);
@@ -216,4 +217,161 @@ class AdminController extends Controller
         }
     }
     /*************************************** END OF DOCTORS SECTION ***********************************************/
+    /************************ ADMIN-NURSES FUNTIONALITY********************************/
+    //show a form to add a new nurse
+    public function showNursesForm()
+    {
+        return view('admin.nurses.create');
+    }
+    //logic to add a new nurse
+    public function addNewNurse(Request $request)
+    {
+        //create validation rules for the incoming request data
+        $rules = array(
+            'name'=>'required',
+            'email'=>'required|email',
+            'phone'=>'required|phone',
+            'password'=>'required',
+            'confirm_password'=>'required',
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
+        );
+        //perform validation on the above set validation rules
+        $validator = Validator::make($request->all(), $rules);
+        //determine if the validation rules are not met
+        if($validator->fails())
+        {
+            //redirect the user to the same page with an errror message
+            return redirect()->back()->with('error',$validator->errors());
+        }
+        //if the validation rules have been met, proceed to get the request data from the form
+        $nurse = new Nurse;
+        $nurse->name = $request->name;
+        $nurse->email = $request->email;
+        $nurse->phone = $request->phone;
+        $pwd = $request->password;
+        $confirm_pwd = $request->confirm_password;
+        //determine if the two password actually match
+        if($pwd !== $confirm_pwd)
+        {
+            //throw an error
+            return redirect()->back()->with('error','Password mismatch');
+        }
+        else
+        {
+            //encrypt the password by Hashing it to 60 bit characters
+            $nurse->password = bcrypt($pwd);
+        }
+        //check if an image is uploaded
+        if($request->file('avartar'))
+        {
+            //get the file uploaded
+            $nurse_avartar = $request->file('avartar');
+            $ext = $nurse_avartar->getClientOriginalExtension();
+            $avartar_name = "Nurse ".$request->name.".".$ext;
+            $path = public_path('uploads/images/nurses/'.$avartar_name);
+            //upload the image by resizing it to a width of 250 and a height of 200 pixels respectively
+            Image::make($nurse_avartar->getRealPath())->resize(250,200, function($constraint)
+            {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($path);
+            $nurse->avartar = $avartar_name;
+        }
+        //save the new nurse into the database
+        if($nurse->save())
+        {
+            //if the nurse was successfully added into the database, show a success message
+            return redirect()->back()->with('success','Nurse '.$request->name.' '.'added successfully');
+        }
+        else
+        {
+            //if the request to add a new nurse fails, throw an error and return the admin to the same form
+            return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error','Failed to add the nurse, try again');
+        }
+    }
+    //list all the nurses
+    public function viewAllNurses()
+    {
+        $nurses = Nurse::latest()->paginate(10);
+        return view('admin.nurses.index', compact('nurses'));
+    }
+    //show the edit form with the nurse's information
+    public function showNurseEditForm(Request $request)
+    {
+        //determine whether the id of the nurse is attached to the request
+        $id = $request->id;
+        if(!$id)
+        {
+            //if not so,
+            return redirect()->back()->with('error','Invalid request');
+        }
+        else
+        {
+            //set the validation
+            $this->validate($request,['id'=>'required']);
+            $nurse = Nurse::where('id',$id)->first();
+            return view('admin.nurses.edit', compact('nurse'));
+        }
+    }
+    //update the details pertaining to a particular nurse
+    public function updateNurseInformation(Request $request)
+    {
+        //get the id of the nurse
+        $id = $request->id;
+        if(!$id)
+        {
+            return redirect()->back()->with('error','Invalid request');
+        }
+        //validation rules
+        $nurse_validation_rules = array(
+            'name'=>'required',
+            'email'=>'required|email',
+            'phone'=>'required|phone',
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
+        );
+    //check to see whether the above set validation rules are met
+        $validator = Validator::make($request->all(), $nurse_validation_rules);
+        //if not, throw an error message with the missing rules
+        if($validator->fails())
+        {
+            return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error',$validator->errors());
+        }
+        else
+        {
+            //if the validation rules have been met, get the input data from the form
+            $nurse = Nurse::where('id',$id)->first();
+            $nurse->name = $request->name;
+            $nurse->email = $request->email;
+            $nurse->phone = $request->phone;
+            //if there is a file upload(Image)
+            if($request->file('avartar'))
+            {
+                $nurse_avartar = $request->file('avartar');
+                $avartar_name = "Nurse ".$request->name.".".$nurse_avartar->getClientOriginalExtension();
+                $path = public_path('uploads/images/nurses/'.$avartar_name);
+                Image::make($nurse_avartar->getRealPath())->resize(250, 200, function($constraint)
+                {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+                $nurse->avartar = $avartar_name;
+            }
+            else
+            {
+                $nurse->avartar = $nurse->avartar;
+            }
+            if($nurse->save())
+            {
+                //if the updation process was successfull
+                return redirect()->to(route('admin.nurses.view.all'))->with('success','Nurse information updated successfully');
+            }
+            else
+            {
+                //if the updatio process failed
+                return redirect()->back()->withInput($request->only('name','email','phone','avartar'))->with('error','Failed to update nurse information, try again');
+            }
+        }
+    }
+    /*********************** END OF ADMIN NURSES FUNCTIONALITY *******************************/
+
 }
