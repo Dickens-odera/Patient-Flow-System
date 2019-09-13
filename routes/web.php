@@ -33,6 +33,7 @@ Route::prefix('admin')->group(function()
     Route::get('/doctors/all','Admin\AdminController@viewAllDoctors')->name('admin.doctors.view.all');
     Route::get('/doctor/update','Admin\AdminController@showDrEditForm')->name('admin.doctor.edit.form');
     Route::post('/doctor/update','Admin\AdminController@updateDrInformation')->name('admin.doctor.update');
+    Route::get('/doctor/delete','Admin\AdminController@deleteDrInformation')->name('admin.doctor.delete');
     //nurses
     Route::get('/nurses','Admin\AdminController@showNursesForm')->name('admin.nurses.add');
     Route::post('/nurses','Admin\AdminController@addNewNurse')->name('admin.nurse.submit');

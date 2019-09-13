@@ -4,6 +4,7 @@
     <div class="col-md-8">
         <div class="box">
             <div class="box-header bg-info text-uppercase text-white">{{ __('All Doctors') }}</div>
+            @include('includes.errors.custom')
             <div class="box-body">
                 <table class="table table-bordered table-striped table-responsive" style="width:100%">
                     <thead>
@@ -26,7 +27,7 @@
                                     <td>{{ $value->phone }}</td>
                                     <td class="btn-group btn-group-sm">
                                         <a href="{{ route('admin.doctor.edit.form', ['id'=>$value->id]) }}" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                                        <a href="#" class="btn btn-sm btn-danger" onclick="if(! confirm('Are you sure you want to delete this particular record?')){return false}"><i class="fa fa-trash"></i> Delete</a>
+                                        <a href="{{ route('admin.doctor.delete',['id'=>$value->id])}}" class="btn btn-sm btn-danger" onclick="if(!confirm('Are you sure you want to delete this particular record?')){return false}"><i class="fa fa-trash"></i> Delete</a>
                                     </td>
                                 </tbody>
                             @endforeach

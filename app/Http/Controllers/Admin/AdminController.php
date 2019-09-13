@@ -188,5 +188,32 @@ class AdminController extends Controller
             }
         }
     }
+    //delete information pertaining to a particular dr
+    public function deleteDrInformation(Request $request)
+    {
+        //get the id of the Dr
+        $id = $request->id;
+        if(!$id)
+        {
+            //if the id is not attached to the request
+            return redirect()->back()->with('error','Invalid request');
+        }
+        else
+        {
+            //if the id is attached to the request
+            $this->validate($request, ['id'=>'required']);
+            //perform the delete request
+            if(Doctors::where('id', $id)->first()->delete())
+            {
+                //if the delete request was successfull, give feedback with a success message
+                return redirect()->back()->with('success','Dr information deleted successfully');
+            }
+            else
+            {
+                //if the request failed
+                return redirect()->back()->with('error','Failed to delete the Dr information, try again');
+            }
+        }
+    }
     /*************************************** END OF DOCTORS SECTION ***********************************************/
 }
