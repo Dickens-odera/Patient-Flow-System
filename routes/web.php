@@ -48,8 +48,13 @@ Route::prefix('admin')->group(function()
     //patients
     Route::get('/patients','Admin\AdminController@viewAllPatients')->name('admin.patients.view.all');
     //departments
-    Route::get('/departements','Admin\AdminController@showDepartmentsForm')->name('admin.departement.add');
+    Route::get('/departments/create-new','Admin\AdminController@showDepartmentsForm')->name('admin.department.add');
     Route::post('/departments','Admin\AdminController@addNewDepartment')->name('admin.department.submit');
+    Route::get('/departments/all','Admin\AdminController@viewAllDepartments')->name('admin.departments.view.all');
+    Route::get('/department/update','Admin\AdminController@showDepartmentEditForm')->name('admin.department.edit.form');
+    Route::post('/department/update','Admin\AdminController@updateDepartmentInformation')->name('admin.department.update');
+    Route::get('/departement/delete','Admin\AdminController@deleteDepartmentInforrmation')->name('admin.department.delete');
+    Route::get('/department/show','Admin\AdminController@showDepartmentDetails')->name('admin.department.show');
     //mail
     Route::get('mail','Admin\AdminController@showAllMail')->name('admin.mails.view.all');
 });

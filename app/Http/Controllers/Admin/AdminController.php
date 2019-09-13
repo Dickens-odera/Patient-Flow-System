@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\Doctors;
 use App\Nurse;
+use App\Departments;
 use Image;
 
 class AdminController extends Controller
@@ -408,5 +409,145 @@ class AdminController extends Controller
         }
     }
     /*********************** END OF ADMIN NURSES FUNCTIONALITY *******************************/
+    /*********************** ADMIN DEOARTMENTS FUNTIONALITY *********************************/
+    //list all the available departments
+    public function viewAllDepartments()
+    {
+       $departments = Departments::latest()->paginate(10);
+       return view('admin.departments.index', compact('departments'));
+    }
+    //show te form to add a new department
+    public function showDepartmentsForm()
+    {
+        return view('admin.departments.create');
+    }
+    //logic that add a new department to the database
+    public function addNewDepartment(Request $request)
+    {
+        //set validation rules
+        $dep_rules = array(
+            'name'=>'required|unique:departments',
+            'description'=>'nullable'
+        );
+        //perform validation
+        $validator = Validator::make($request->all(), $dep_rules);
+        //if the validation fails
+        if($validator->fails())
+        {
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back()->withInput($request->only('name','description'));
+        }
+        else
+        {
+              //get the input data from the form
+              $department = new Departments;
+              $department->name = $request->name;
+              $department->description = $request->description;
+              //save the department to the database
+              if($department->save())
+              {
+                  //upon success
+                  $request->session()->flash('success','The '.$request->name." "."department has been added sucessfully");
+                  return redirect()->back();
+              } 
+              else
+              {
+                  //upon failure
+                  $request->session()->flash('error','Failed to add the new department, try again');
+                  return redirect()->back()->withInput($request->only('name','description'));
+              }
+        }
+    }
+    //show the details of a single department
+    public function showDepartmentDetails(Request $request, $department_id = null)
+    {
+        //find the departement by id
+        $department_id = $request->id;
+        //check if the id is not provided
+        if(!$department_id)
+        {
+            //if not
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            //peform data validation
+            $validator = Validator::make($request->all(), ['id'=>'required']);
+            if($validator->fails())
+            {
+                //if the validation has failed
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
+            }
+            else
+            {
+                $department = Departments::where('id',$department_id)->first();
+                return view('admin.departments.show', compact('department'));
+            }
+        }
+    }
+    //delete a partiicular department
+    public function deleteDepartmentInforrmation(Request $request, $dep_id = null)
+    {
+        //ewquire id for the action
+        $dep_id = $request->id;
+        //if there is no id attached to the request
+        if(!$dep_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            //perform data validation
+            $this->validate($request, ['id'=>'required']);
+            //perform the delete action
+            if(Departments::where('id',$dep_id)->first()->delete())
+            {
+                //if the department has been deleted successfully
+                $request->session()->flash('success','the department has been successfully deleted');
+                return redirect()->back();
+            }
+            else
+            {
+                //if the delete action failed
+                $request->session()->flash('error','Failed to complete yoir request, try again');
+                return redirect()->back()->withInput($request->only('name','description'));
+            }
+        }
+    }
+    //update the information pertaining to a particular department
+    public function updateDepartmentInformation(Request $request, $dep_id = null)
+    {
+        //get the id of the department
+        $dep_id = $request->id;
+        //if the id is not provided in the request
+        if(!$dep_id)
+        {
+            //throw an error
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            //if the id is provided
+            $this->validate($request,['name'=>'required','description'=>'required']);
+            //perform the updation process
+            if(Departments::where('id',$dep_id)->first()->update(['name'=>$request->name,'description'=>$request->description]))
+            {
+                //if the updation process was a success
+                $request->session()->flash('success','Department data updated successfully');
+                return redirect()->to(route('admin.departments.view.all'));
+            }
+            else
+            {
+                //if the updation process failed
+                $request->session()->flash('error','Failed to update department information, try again');
+                return redirect()->back()->withInput($request->only('name','description'));
+            }
+        }
+    }
 
+    /*********************** END OF ADMIN DEPARTMENTS FUNCTIONALITY */
 }
