@@ -4,7 +4,7 @@
 <div class="col-md-8">
     @include('includes.errors.custom')
     <div class="box">
-        <div class="box-header bg-info text-uppercase text-white">{{ __('Add a new doctor') }}</div>
+        <div class="box-header bg-info text-uppercase text-white">{{ __('Edit Dr Information') }}</div>
         <div class="box-body">
                 <form action="{{ route('admin.doctor.update', ['id'=>$doctor->id]) }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}

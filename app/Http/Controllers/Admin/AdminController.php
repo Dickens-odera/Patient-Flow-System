@@ -159,7 +159,8 @@ class AdminController extends Controller
                 if($request->file('avartar'))
                 {
                     $avartar = $request->file('avartar');
-                    $avartar_name = "Dr.".$request->name.".".$avartar->getClientOriginalExtension();
+                    $ext = $avartar->getClientOriginalExtension();
+                    $avartar_name = "Dr.".$request->name.".".$ext;
                     $path = public_path('uploads/images/doctors/'.$avartar_name);
                     //save the image
                     Image::make($avartar->getRealPath())->resize(250, null, function($constraint)
