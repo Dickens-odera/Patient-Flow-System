@@ -109,7 +109,7 @@ class PatientsController extends Controller
             //check the status of the booking is
             if($booking_item->status === 'approved')
             {
-                $request->session()->flash('error','You cannot cancel an already approved booking');
+                $request->session()->flash('error','You cannot cancel an already approved booking item');
             }
             elseif($booking_item->status === 'pending')
             {

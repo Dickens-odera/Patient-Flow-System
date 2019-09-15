@@ -98,7 +98,7 @@ class DoctorsController extends Controller
     //show all the approved appointments
     public function showAllApprovedBookings()
     {
-        $approved_bookings = Bookings::where('status','approved')->latest()->paginate(10);
+        $approved_bookings = Bookings::where('status','approved')->where('doctor',Auth::user()->name)->latest()->paginate(10);
         return view('doctor.patients.bookings.approved',compact('approved_bookings'));
     }
 }

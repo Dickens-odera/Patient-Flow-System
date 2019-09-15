@@ -30,7 +30,7 @@
                                 </tbody>
                             @endforeach
                         @else
-                        <p class="alert-warning">No Approved Bookings yet</p>
+                        <p class="alert-warning">You have not approved any appointments yet</p>
                         @endif
                     </thead>
                 </table>

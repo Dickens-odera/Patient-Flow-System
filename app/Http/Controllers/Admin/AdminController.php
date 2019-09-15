@@ -103,7 +103,7 @@ class AdminController extends Controller
         //set the validation rules
         $rules = array(
             'name'=>'required',
-            'email'=>'required|email',
+            'email'=>'required|email|unique:doctors',
             'password'=>'required',
             'confirm_password'=>'required',
             'phone'=>'required|phone|max:12|unique:doctors',
@@ -151,6 +151,32 @@ class AdminController extends Controller
             if($doctor->save())
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
+                $message = "Dear ".$request->name." Kindly use these credentials to login to https://localhost:8000/doctor/doctorlogin"." Username:".$request->email.". Password:".$request->password;
+                $postData = array(
+                    'username'=>config('username',''),
+                    'api_key'=>config('apikey',''),
+                    'sender'=>config('senderid',''),
+                    'to'=>$request->phone,
+                    'message'=>$message,
+                    'msgtype'=>config('msgtype',''),
+                    'dlr'=>config('dlr','')
+                );
+                $ch = curl_init();
+                curl_setopt_array($ch, array(
+                    CURLOPT_URL => config('url',''),
+                    CURLOPT_RETURNTRANSFER =>true,
+                    CURLOPT_POST =>  true,
+                    CURLOPT_POSTFIELDS => $postData
+                ));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                $output = curl_exec($ch);
+                if(curl_errno($ch))
+                {
+                    curl_errno($ch);
+                }
+                curl_close($ch);
+                //return response()->json(['state'=>'success']);
                 $request->session()->flash('success','The doctor has been added successfully');
                 return redirect()->back();
             }
