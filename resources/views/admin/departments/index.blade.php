@@ -22,7 +22,7 @@
                                     <td>{{ $value->name }}</td>
                                     {{-- <td><textarea name="" id="" cols="30" rows="10">{{ $value->description}}</textarea></td> --}}
                                     <td class="btn-group btn-group-sm">
-                                        <a href="{{ route('admin.department.show',['id'=>$value->id]) }}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i></a>
+                                        <a href="{{ route('admin.department.show',['id'=>$value->id]) }}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
                                         {{-- <a href="{{ route('admin.department.edit.form', ['id'=>$value->id]) }}" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a> --}}
                                         <a href="{{ route('admin.department.delete',['id'=>$value->id])}}" class="btn btn-sm btn-danger" onclick="if(!confirm('Are you sure you want to delete this particular record?')){return false}"><i class="fa fa-trash"></i> Delete</a>
                                     </td>

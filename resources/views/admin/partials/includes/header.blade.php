@@ -216,14 +216,15 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{!! asset('admin/dist/img/user2-160x160.jpg') !!}" class="user-image" alt="User Image">
+                  {{-- <img src="{!! asset('admin/dist/img/user2-160x160.jpg') !!}" class="user-image" alt="User Image"> --}}
+                  <img src="/storage/uploads/images/admins/{{ Auth::user()->avartar}}" alt="admin image" class="user-image">
                   <span class="hidden-xs">{{ Auth::user()->name }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{!! asset('admin/dist/img/user2-160x160.jpg') !!}" class="img-circle" alt="User Image">
-    
+                    {{-- <img src="{!! asset('admin/dist/img/user2-160x160.jpg') !!}" class="img-circle" alt="User Image"> --}}
+                    <img src="/storage/uploads/images/admins/{{ Auth::user()->avartar }}" alt="Admin Image" class="img-circle">
                     <p>
                      {{ Auth::user()->name }}
                       <small>System Administrator</small>
@@ -234,7 +235,7 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="{{ route('admin.profile',['name'=>base64_encode(Auth::user()->name),'email'=>base64_encode(Auth::user()->email)]) }}" class="btn btn-default btn-flat">{{ __('Profile') }}</a>
+                      <a href="{{ route('admin.profile',['id'=>Auth::user()->id,'name'=>base64_encode(Auth::user()->name),'email'=>base64_encode(Auth::user()->email)]) }}" class="btn btn-default btn-flat">{{ __('Profile') }}</a>
                     </div>
                     <div class="pull-right">
                       {{-- <a href="#" class="btn btn-default btn-flat">Sign out</a> --}}

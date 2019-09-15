@@ -10,8 +10,9 @@ use App\Doctors;
 use App\Nurse;
 use App\Departments;
 use App\Patients;
+use App\Admin;
 use Image;
-
+use Auth;
 class AdminController extends Controller
 {
     //declare the authnetication guard
@@ -25,9 +26,64 @@ class AdminController extends Controller
         return view('admin.partials.index');
     }
     //admin profile
-    public function profile()
+    public function profile(Request $request, $admin_id = null)
     {
         //show the administrator their profile
+        $admin_id = Auth::user()->id;
+        if(!$admin_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+        }
+        else
+        {
+            $this->validate($request, ['id'=>'required']);
+            $admin = Admin::where('id', $admin_id)->first();
+            return view('admin.profile.index', compact('admin'));
+        }
+    }
+    //update the admin profile
+    public function updateProfile(Request $request, $adm_id = null)
+    {
+        $adm_id = Auth::user()->id;
+        if(!$adm_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+        }
+        else
+        {
+            $this->validate($request,array(
+                'name'=>'required',
+                'email'=>'required|email',
+                'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
+            ));
+            $admin = Admin::where('id',$adm_id)->first();
+            $admin->name = $request->name;
+            $admin->email = $request->email;
+            if($request->file('avartar'))
+            {
+                $admin_photo = $request->file('avartar');
+                $ext = $admin_photo->getClientOriginalExtension();
+                $saved_admin_photo_name = time().str_random(40).".".$ext;
+                $path = public_path('uploads/images/admins/'.$saved_admin_photo_name);
+                Image::make($admin_photo->getRealPath())->resize(250, 200, function($constraint)
+                {   
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+                $admin->avartar = $saved_admin_photo_name;
+            }
+            if($admin->save())
+            {
+                $request->session()->flash('success','Profile updated successfully');
+                return redirect()->back();
+            }   
+            else
+            {
+                $request->session()->flash('error','Unable to update your profile at this time,try again');
+                return redirect()->back();
+            }
+
+        }
     }
     /**************************** DOCTORS SECTION OF THE ADMIN *************************/
     //show a list of all doctors

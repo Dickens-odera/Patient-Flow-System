@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-md-8 col-md-offset-4">
                         <button class="btn btn-sm btn-success" type="submit">
-                            <i class="fa fa-send"></i> {{ __('Submit') }}
+                            <i class="fa fa-send"></i> {{ __('Update') }}
                         </button>
                         <a href="{{ route('admin.dashboard') }}" class="btn btn-danger btn-sm pull-right">
                             <i class="fa fa-window-close"></i> Cancel

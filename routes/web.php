@@ -28,6 +28,7 @@ Route::prefix('admin')->group(function()
     Route::get('/logout','Auth\AdminLoginController@logout')->name('admin.logout');
     Route::get('/dashboard','Admin\AdminController@index')->name('admin.dashboard');
     Route::get('/profile','Admin\AdminController@profile')->name('admin.profile');
+    Route::post('/profile','Admin\AdminController@updateProfile')->name('admin.profile.update');
     //doctors
     Route::get('/doctors','Admin\AdminController@showDoctorsForm')->name('admin.doctor.add');
     Route::post('/doctor','Admin\AdminController@addNewDoctor')->name('admin.doctor.submit');
@@ -65,6 +66,13 @@ Route::prefix('doctors')->group(function()
     Route::post('/doctorlogin', 'Auth\DoctorsLoginController@login')->name('doctor.login.submit');
     Route::get('/logout','Auth\DoctorsLoginController@logout')->name('doctor.logout');
     Route::get('/dashboard','Doctors\DoctorsController@index')->name('doctor.dashboard');
+    Route::get('/profile','Doctors\DoctorsController@profile')->name('doctor.profile');
+    Route::get('/profile','Doctors\DoctorsController@updateProfile')->name('doctor.profile.update');
+    Route::get('/patient/bookings/requests','Doctors\DoctorsController@viewAllBookings')->name('doctor.patient.bookings.request');
+    Route::get('/patient/booking/detail','Doctors\DoctorsController@viewPatientBookingDetail')->name('doctor.patient.booking.detail');
+    Route::post('/patient/booking/approval','Doctors\DoctorsController@approveAppointmentBooking')->name('doctor.patient.booking.approve');
+    Route::get('/patient/bookings/approved','Doctors\DoctorsController@showAllApprovedBookings')->name('doctor.patient.bookings.approved.all');
+
 });
 //patients routes
 Route::prefix('patients')->group(function()
@@ -73,6 +81,14 @@ Route::prefix('patients')->group(function()
     Route::post('/patientlogin','Auth\PatientsLoginController@login')->name('patient.login.submit');
     Route::get('/logout','Auth\PatientsLoginController@logout')->name('patient.logout');
     Route::get('/dashboard','Patients\PatientsController@index')->name('patient.dashboard');
+    Route::get('/profile','Patients\PatientsController@profile')->name('patient.profile');
+    Route::post('/profile','Patients\PatientsController@updateProfile')->name('patient.profile.update');
+    Route::get('/doctor/bookings','Patients\PatientsController@showDrBookingForm')->name('patient.doctor.booking');
+    Route::post('/doctor/bookings','Patients\PatientsController@submitDrBookings')->name('patient.doctor.booking.submit');
+    Route::get('/doctor/bookings/history','Patients\PatientsController@viewHistory')->name('patient.doctor.bookings.history');
+    Route::post('/doctor/bookings/cancel','Patients\PatientsController@cancelBooking')->name('patient.doctor.booking.cancel');
+    Route::get('/doctor/bookings/delete','Patients\PatientsController@deleteBookingHistory')->name('patient.doctor.booking.history.delete');
+    Route::get('/doctor/bookings/approved','Patients\PatientsController@showAllApprovedBookings')->name('patient.doctor.bookings.approved.all');
 });
 //nurses routes
 Route::prefix('nurses')->group(function()

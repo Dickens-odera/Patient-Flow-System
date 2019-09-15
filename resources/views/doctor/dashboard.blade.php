@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('doctor.main')
 @include('doctor.header')
 @section('content')
     <div class="box">
