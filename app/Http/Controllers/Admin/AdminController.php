@@ -153,17 +153,17 @@ class AdminController extends Controller
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
                 $message = "Dear ".$request->name." Kindly use these credentials to login to https://localhost:8000/doctor/doctorlogin"." Username:".$request->email.". Password:".$request->password;
                 $postData = array(
-                    'username'=>config('username',''),
-                    'api_key'=>config('apikey',''),
-                    'sender'=>config('senderid',''),
+                    'username'=>env('username'),
+                    'api_key'=>env('apikey'),
+                    'sender'=>env('senderid'),
                     'to'=>$request->phone,
                     'message'=>$message,
-                    'msgtype'=>config('msgtype',''),
-                    'dlr'=>config('dlr','')
+                    'msgtype'=>env('msgtype'),
+                    'dlr'=>env('dlr')
                 );
                 $ch = curl_init();
                 curl_setopt_array($ch, array(
-                    CURLOPT_URL => config('url',''),
+                    CURLOPT_URL => env('url'),
                     CURLOPT_RETURNTRANSFER =>true,
                     CURLOPT_POST =>  true,
                     CURLOPT_POSTFIELDS => $postData
