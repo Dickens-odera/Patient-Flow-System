@@ -151,19 +151,19 @@ class AdminController extends Controller
             if($doctor->save())
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
-                $message = "Dear ".$request->name." Kindly use these credentials to login to https://localhost:8000/doctor/doctorlogin"." Username:".$request->email.". Password:".$request->password;
+                $message = "Dear ".$request->name." Kindly use these credentials to <a href='https://localhost:8000/doctor/doctorlogin'>login here</a>"." Username:".$request->email.". Password:".$request->password;
                 $postData = array(
-                    'username'=>env('username'),
-                    'api_key'=>env('apikey'),
-                    'sender'=>env('senderid'),
+                    'username'=>env('USERNAME'),
+                    'api_key'=>env('APIKEY'),
+                    'sender'=>env('SENDERID'),
                     'to'=>$request->phone,
                     'message'=>$message,
-                    'msgtype'=>env('msgtype'),
-                    'dlr'=>env('dlr')
+                    'msgtype'=>env('MSGTYPE'),
+                    'dlr'=>env('DLR')
                 );
                 $ch = curl_init();
                 curl_setopt_array($ch, array(
-                    CURLOPT_URL => env('url'),
+                    CURLOPT_URL => env('URL'),
                     CURLOPT_RETURNTRANSFER =>true,
                     CURLOPT_POST =>  true,
                     CURLOPT_POSTFIELDS => $postData
@@ -381,6 +381,32 @@ class AdminController extends Controller
         if($nurse->save())
         {
             //if the nurse was successfully added into the database, show a success message
+            $message = "Dear ".$request->name."Kindly use these credentials to log into your portal <a href='http://localhost:8000/nurses/nurseslogin/'>here</a>"."Username:".$request->email." Password".$request->password;
+        
+                $data = array(
+                    'username'=>env('USERNAME'),
+                    'api_key'=>env('APIKEY'),
+                    'sender'=>env('SENDERID'),
+                    'to'=>$request->phone,
+                    'message'=>$message,
+                    'msgtype'=>env('MSGTYPE'),
+                    'dlr'=>ENV('DLR')
+                );
+                $ch = curl_init();
+                curl_setopt_array($ch, array(
+                    CURLOPT_URL => env('URL'),
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $data
+                ));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                    $output = curl_exec($ch);
+                    if(curl_errno($ch))
+                    {
+                        $output = curl_errno($ch);
+                    }
+                    curl_close($ch);
             $request->session()->flash('success','Nurse '.$request->name.' '.'added successfully');
             return redirect()->back();
         }

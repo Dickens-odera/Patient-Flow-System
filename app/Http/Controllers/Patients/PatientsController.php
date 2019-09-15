@@ -69,6 +69,33 @@ class PatientsController extends Controller
             //save the new booking item
             if($booking->save())
             {
+                $doctor = Doctors::where('name',$request->doctor)->first();
+                $message = "Dear ".$request->doctor." You have an appointment request from ".Auth::user()->name."Kindly click <a href='https://localhost/8000/doctors/patient/bookings/requests/'>here</a> for more details";
+                
+                $data = array(
+                    'username'=>env('USERNAME'),
+                    'api_key'=>env('APIKEY'),
+                    'sender'=>env('SENDERID'),
+                    'to'=>$doctor->phone,
+                    'message'=>$message,
+                    'msgtype'=>env('MSGTYPE'),
+                    'dlr'=>ENV('DLR')
+                );
+                $ch = curl_init();
+                curl_setopt_array($ch, array(
+                    CURLOPT_URL => env('URL'),
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $data
+                ));
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                    $output = curl_exec($ch);
+                    if(curl_errno($ch))
+                    {
+                        $output = curl_errno($ch);
+                    }
+                    curl_close($ch);
                 $request->session()->flash('success','Booking made successfully, wait for doctor`s response');
                 return redirect()->to(route('patient.dashboard'));
             }
