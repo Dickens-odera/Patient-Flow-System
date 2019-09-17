@@ -14,9 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 //admin routes
@@ -106,3 +104,9 @@ Route::prefix('staff')->group(function()
     Route::get('/logout','Auth\StaffLoginController@logout')->name('staff.logout');
     Route::get('/dashboard','Staff\StaffController@index')->name('staff.dashboard');
 });
+
+//general welcome page functionalities
+Route::post('/welcome/patient/service-request','HospitalServices\PatientServivesController@postPatientServiceRequest')->name('welcome.patient.services.request');
+Route::get('/patient-emergency-request','HospitalServices\PatientServivesController@showPatientEmergecyForm')->name('patient.emergency.request.form');
+Route::get('/patient/create-new-account','HospitalServices\PatientServivesController@showPatientRegistrationForm')->name('patient.register');
+Route::get('/patient/nurse-request','HospitalServices\PatientServivesController@showPatientNurseRequestForm')->name('patient.nurse.request.form');

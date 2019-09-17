@@ -1,3 +1,4 @@
+@include('includes.errors.custom')
 <!DOCTYPE html>
 <html lang="en">
 <head>

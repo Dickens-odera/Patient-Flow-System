@@ -1,3 +1,4 @@
+@include('includes.errors.custom')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -66,10 +67,10 @@
         </style>
     </head>
     <body>
-        <div class="container" style="margin-top:10% !important; border:1px solid #fff; padding:100px !important">
+        <div class="container" style="margin-top:2% !important; border:1px solid #fff; padding:100px !important;">
             <div class="row">
                 <div class="col-md-12 text-center text-uppercase" style="margin-bottom:20px;color:#fff;font-size:50px">
-                        <h4 class="" style="border:2px solid #80888; padding:5px">{{ env('APP_NAME') }}</h4>
+                        <h1 class="" style="border:2px solid #80888; padding:5px">{{ env('APP_NAME') }}</h1>
                 </div>
                 <div class="col-md-12 row">
                     <div class="col-md-3">
@@ -82,7 +83,7 @@
                                     @if(Auth::guard('doctor')->check())
                                         <a href="{{ route('doctor.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-icon-wrench"></i>{{ __('Proceed to dashboard') }}</a>
                                     @else
-                                        <a href="{{ route('doctor.login') }}" class="btn btn-sm btn-success" style="width:100%"><i class="fa fa-icon-wrench"></i> {{__('Login Here')}}</a>
+                                        <a href="{{ route('doctor.login') }}" class="btn btn-sm btn-success" style="width:100%"><i class="fa fa-icon-wrench"></i> {{__('Login')}}</a>
                                     @endif
 
                             </div>
@@ -98,7 +99,7 @@
                             </div>
                             <div class="card-body">
                                 <!-- body content -->
-                                <form action="" method="POST">
+                                <form action="{{ route('welcome.patient.services.request') }}" method="POST">
                                     {{ csrf_field() }}
                                     <div class="form-group row">
                                         <label for="service" class="col-md-6 form-label text-md-right">{{ __('Action') }}</label>
@@ -106,14 +107,14 @@
                                             <select name="service" id="service" class="form-control">
                                                 <option value="">Select...</option>
                                                 @if(Auth::guard('patient')->check())
-                                                    <option value="dashboard"><a href="{{ route('patient.dashboard') }}"></a> My Dashboard</option>
+                                                    <option value="dashboard"> {{ __("My Dashboard") }}</option>
                                                 @else
-                                                    <option value="login"><a href="{{ route('patient.login') }}"></a> Login</option>
+                                                    <option value="login"><a href="{{ route('patient.login') }}"></a> {{ __("Login") }}</option>
                                                 @endif
-                                                <option value="register">{{ __('Create Account') }}</option>
-                                                <option value="emergency">{{ __('Emergency') }}</option>
-                                                <option value="booking">{{ __('Book a Doctor') }}</option>
-                                                <option value="pharmacy">{{ __('Talk to a Nurse') }}</option>
+                                                    <option value="register">{{ __('Create Account') }}</option>
+                                                    <option value="emergency">{{ __('Emergency') }}</option>
+                                                    <option value="booking">{{ __('Book a Doctor') }}</option>
+                                                    <option value="nurse_request">{{ __('Talk to a Nurse') }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -138,7 +139,7 @@
                                 @if(Auth::guard('nurse')->check())
                                     <a href="{{ route('nurse.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Proceed Dashboard') }}</a>
                                 @else
-                                    <a href="{{ route('nurse.login') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Login Here') }}</a>
+                                    <a href="{{ route('nurse.login') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Login') }}</a>
                                 @endif
                             </div>
                             <div class="card-footer">
@@ -156,7 +157,7 @@
                                 @if(Auth::guard('staff')->check())
                                     <a href="{{ route('staff.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Proceed to Dashboard') }}</a>
                                 @else
-                                    <a href="{{ route('nurse.login') }}" class="btn btn-success btn-sm" style="width:100%">{{ __('Login Here') }}</a>
+                                    <a href="{{ route('staff.login') }}" class="btn btn-success btn-sm" style="width:100%">{{ __('Login') }}</a>
                                 @endif
                             </div>
                             <div class="card-footer">
@@ -164,6 +165,43 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <hr>
+                <div class="col-md-12 text-center row" style="margin-top:10px;">
+                    <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header bg-info text-white text-uppercase">
+                                    {{ __('system administrator')}}
+                                    <i class="fa fa-user pull-right" style="font-size:50px; color:#fff000"></i>
+                                </div>
+                                <div class="card-body">
+                                    <!-- body content goes here -->
+                                    @if(Auth::guard('admin')->check())
+                                        <a href="{{ route('admin.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-send"></i> {{ __('proceed to dashboard') }}</a>
+                                    @else
+                                        <a href="{{ route('admin.login') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-send"></i> {{ __('Login') }}</a>
+                                    @endif
+                                </div>
+                                <div class="card-footer">
+                                    <!-- footer content goe here -->
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-info text-white text-uppercase">{{ __('Help Desk') }}
+                                    <i class="fa fa-question pull-right" style="font-size:50px; color:#fff000"></i>
+                            </div>
+                            <div class="card-body">
+                                <!--Content goes here -->
+                                <a href="" class="btn btn-sm btn-success" style="width:100%"><i class="fas fa-question-square"></i>{{ __('Post Query') }}</a>
+                            </div>
+                            <div class="card-footer">
+                                <!-- footer content goes here -->
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
