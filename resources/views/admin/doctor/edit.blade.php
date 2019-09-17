@@ -27,6 +27,28 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                            <label for="type" class="col-md-4 form-label">{{ __('Doctor Type') }}</label>
+                            <div class="col-md-8">
+                                <select name="type" class="form-control" id="">
+                                    @if($doctor->type === 'permanent')
+                                        <option value="{{ $doctor->type }}">{{ $doctor->type }}</option>
+                                        <option value="trainee">Trainee Doctor</option>
+                                        <option value="visiting">Visiting Doctor</option>
+                                    @endif
+                                    @if($doctor->type === 'trainee')
+                                        <option value="{{ $doctor->type }}">{{ $doctor->type }}</option>
+                                        <option value="permanent">Permanent Doctor</option>
+                                        <option value="visiting">Visiting Doctor</option>
+                                    @endif
+                                    @if($doctor->type === 'visiting')
+                                        <option value="{{ $doctor->type }}">{{ $doctor->type }}</option>
+                                        <option value="permanent">Permanent Doctor</option>
+                                        <option value="trainee">Trainee Doctor</option>
+                                    @endif
+                                </select>
+                            </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="avartar" class="col-md-4 form-label text-md-right">{{ __('Passport Photo') }}</label>
                         <div class="col-md-8">
                             <input type="file" name="avartar">

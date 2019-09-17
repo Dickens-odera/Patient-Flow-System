@@ -27,6 +27,16 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                            <label for="type" class="col-md-4 form-label">{{ __('Doctor Type') }}</label>
+                            <div class="col-md-8">
+                                <select name="type" class="form-control" id="">
+                                    <option value="trainee">Trainee Doctor</option>
+                                    <option value="visiting">Visiting Doctor</option>
+                                    <option value="permanent">Permanent Doctor</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="password" class="col-md-4 form-label text-md-right">{{ __('Password') }}</label>
                         <div class="col-md-8">
                             <input type="password" name="password" class="form-control">

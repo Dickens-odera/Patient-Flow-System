@@ -107,7 +107,8 @@ class AdminController extends Controller
             'password'=>'required',
             'confirm_password'=>'required',
             'phone'=>'required|phone|max:12|unique:doctors',
-            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'type'=>'required'
         );
         //perform data validation on the incoming requests
         $validator = Validator::make($request->all(), $rules);
@@ -122,6 +123,7 @@ class AdminController extends Controller
             $doctor = new Doctors;
             $doctor->name = $request->name;
             $doctor->email = $request->email;
+            $doctor->type = $request->type;
             $pwd = $request->password;
             $confirm_pwd = $request->confirm_password;
             if($pwd !== $confirm_pwd)
@@ -222,7 +224,8 @@ class AdminController extends Controller
             'name'=>'required',
             'email'=>'required',
             'phone'=>'required|phone|max:12',
-            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
+            'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'type'=>'required'
         );
         //perfor validation on the above rules to ensure that they are met before perfoming any action
         $validator = Validator::make($request->all(),$rules);
@@ -248,6 +251,7 @@ class AdminController extends Controller
                 $doctor = Doctors::where('id',$id)->first();
                 $doctor->name = $request->name;
                 $doctor->email = $request->email;
+                $doctor->type = $request->type;
                 $doctor->phone = $request->phone;
                 //check if a new image has been uploaded
                 if($request->file('avartar'))
