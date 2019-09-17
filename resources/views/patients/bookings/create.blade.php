@@ -72,7 +72,7 @@
                         <button class="btn btn-sm btn-success" type="submit">
                             <i class="fa fa-send"></i> {{ __('Submit') }}
                         </button>
-                        <a href="{{ route('admin.dashboard') }}" class="btn btn-danger btn-sm pull-right">
+                        <a href="{{ route('patient.dashboard') }}" class="btn btn-danger btn-sm pull-right">
                             <i class="fa fa-window-close"></i> Cancel
                         </a>
                     </div>
