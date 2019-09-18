@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Auth;
 use App\Patients;
+use App\Nurse;
+use App\Doctors;
+use App\Emergencies;
+use App\Accidents;
+use App\Maternity;
 use Image;
 class PatientServivesController extends Controller
 {
@@ -80,8 +85,75 @@ class PatientServivesController extends Controller
     //show the emergency form
     public function showPatientEmergecyForm()
     {
-        //
+        $nurse = Nurse::latest()->get();
+        return view('emergencies.create', compact('nurse'));
     }
+    //submit the emrenecy request from the user
+    public function submitPatientEmergencyRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(),array(
+            'patient_name'=>'required',
+            'type'=>'required',
+            'location'=>'required',
+            'street'=>'required',
+            'address'=>'required',
+            'phone'=>'required',
+            'gender'=>'required',
+            'comments'=>'required'
+        ));
+        if($validator->fails())
+        {
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back()->withInput($request->only('patient_name','type','location','street','address','phone','gender','coments'));
+        }
+        else
+        {
+            $emergency  = new Emergencies;
+            $emergency->patient_name = $request->patient_name;
+            $emergency->type = $request->type;
+            $emergency->location = $request->location;
+            $emergency->street = $request->street;
+            $emergency->address = $request->address;
+            $emergency->phone = $request->phone;
+            $emergency->gender = $request->gender;
+            $emergency->comments = $request->comments;
+            if($emergency->save())
+            {
+                $request->session()->flash('success','Emergency request submitted, you shall get a response from the nurse shortly');
+                return view('welcome');
+                if($request->type === 'accident')
+                {
+                    //submit the accident request
+                    $accident = New Accidents;
+                    $accident->patient = $request->patient_name;
+                    $accident->location = $request->location;
+                    $accident->street = $request->street;
+                    $accident->description = $request->comments;
+                    $accident->save(); //send sms to nurse in the near future
+
+                }
+                elseif($request->type === 'maternity')
+                {
+                    $maternity_request = new Maternity;
+                    $maternity_request->patient = $request->patient_name;
+                    $maternity_request->location = $request->location;
+                    $maternity_request->street = $request->street;
+                    $maternity_request->description = $request->comments;
+                    $maternity_request->save(); //send sms to nurse in the near future
+                }
+                else
+                {
+                    //first aid
+                }
+            }   
+            else
+            {
+                $request->session()->flash('error','Server error, try again');
+                return redirect()->back()->withInput($request->only('patient_name','type','location','street','address','phone','gender','coments'));
+            }
+        }
+    }
+
     //show the form for the patient to register into the system
     public function showPatientRegistrationForm()
     {

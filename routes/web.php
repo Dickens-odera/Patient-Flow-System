@@ -108,6 +108,7 @@ Route::prefix('staff')->group(function()
 //general welcome page functionalities
 Route::post('/welcome/patient/service-request','HospitalServices\PatientServivesController@postPatientServiceRequest')->name('welcome.patient.services.request');
 Route::get('/patient-emergency-request','HospitalServices\PatientServivesController@showPatientEmergecyForm')->name('patient.emergency.request.form');
+Route::post('/patient-emergency-request','HospitalServices\PatientServivesController@submitPatientEmergencyRequest')->name('patient.emergency.request.submit');
 Route::get('/patient/create-new-account','HospitalServices\PatientServivesController@showPatientRegistrationForm')->name('patient.register');
 Route::post('/patient/create-new-account','HospitalServices\PatientServivesController@registerPatient')->name('patient.register.submit');
 Route::get('/patient/nurse-request','HospitalServices\PatientServivesController@showPatientNurseRequestForm')->name('patient.nurse.request.form');
