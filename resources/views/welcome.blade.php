@@ -81,7 +81,7 @@
                             <div class="card-body">
                                 <!-- body content -->
                                     @if(Auth::guard('doctor')->check())
-                                        <a href="{{ route('doctor.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-icon-wrench"></i>{{ __('Proceed to dashboard') }}</a>
+                                        <a href="{{ route('doctor.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-icon-wrench"></i>{{ __('My Dashboard') }}</a>
                                     @else
                                         <a href="{{ route('doctor.login') }}" class="btn btn-sm btn-success" style="width:100%"><i class="fa fa-icon-wrench"></i> {{__('Login')}}</a>
                                     @endif
@@ -137,7 +137,7 @@
                             <div class="card-body">
                                 <!-- body content -->
                                 @if(Auth::guard('nurse')->check())
-                                    <a href="{{ route('nurse.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Proceed Dashboard') }}</a>
+                                    <a href="{{ route('nurse.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('My Dashboard') }}</a>
                                 @else
                                     <a href="{{ route('nurse.login') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Login') }}</a>
                                 @endif
@@ -155,7 +155,7 @@
                             <div class="card-body">
                                 <!-- body content -->
                                 @if(Auth::guard('staff')->check())
-                                    <a href="{{ route('staff.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('Proceed to Dashboard') }}</a>
+                                    <a href="{{ route('staff.dashboard') }}" class="btn btn-sm btn-success" style="width:100%">{{ __('My Dashboard') }}</a>
                                 @else
                                     <a href="{{ route('staff.login') }}" class="btn btn-success btn-sm" style="width:100%">{{ __('Login') }}</a>
                                 @endif
@@ -177,7 +177,7 @@
                                 <div class="card-body">
                                     <!-- body content goes here -->
                                     @if(Auth::guard('admin')->check())
-                                        <a href="{{ route('admin.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-send"></i> {{ __('proceed to dashboard') }}</a>
+                                        <a href="{{ route('admin.dashboard') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-send"></i> {{ __('My Dashboard') }}</a>
                                     @else
                                         <a href="{{ route('admin.login') }}" class="btn btn-success btn-sm" style="width:100%"><i class="fa fa-send"></i> {{ __('Login') }}</a>
                                     @endif

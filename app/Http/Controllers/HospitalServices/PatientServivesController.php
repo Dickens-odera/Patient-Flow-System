@@ -14,6 +14,7 @@ use App\Doctors;
 use App\Emergencies;
 use App\Accidents;
 use App\Maternity;
+use App\FirstAid;
 use Image;
 class PatientServivesController extends Controller
 {
@@ -83,7 +84,7 @@ class PatientServivesController extends Controller
         }
     }
     //show the emergency form
-    public function showPatientEmergecyForm()
+    public function showPatientEmergencyForm()
     {
         $nurse = Nurse::latest()->get();
         return view('emergencies.create', compact('nurse'));
@@ -119,8 +120,6 @@ class PatientServivesController extends Controller
             $emergency->comments = $request->comments;
             if($emergency->save())
             {
-                $request->session()->flash('success','Emergency request submitted, you shall get a response from the nurse shortly');
-                return view('welcome');
                 if($request->type === 'accident')
                 {
                     //submit the accident request
@@ -134,6 +133,7 @@ class PatientServivesController extends Controller
                 }
                 elseif($request->type === 'maternity')
                 {
+                    //submit the maternity request
                     $maternity_request = new Maternity;
                     $maternity_request->patient = $request->patient_name;
                     $maternity_request->location = $request->location;
@@ -141,10 +141,22 @@ class PatientServivesController extends Controller
                     $maternity_request->description = $request->comments;
                     $maternity_request->save(); //send sms to nurse in the near future
                 }
+                elseif($request->type === 'first_aid')
+                {
+                    //submit the first aid request
+                    $first_aid_request = new FirstAid;
+                    $first_aid_request->patient = $request->patient_name;
+                    $first_aid_request->location = $request->location;
+                    $first_aid_request->street = $request->street;
+                    $first_aid_request->description = $request->comments;
+                    $first_aid_request->save(); //send sms to nurse in the near future
+                }
                 else
                 {
-                    //first aid
+                    return true;
                 }
+                $request->session()->flash('success','Emergency request submitted, you shall get a response from the nurse shortly');
+                return view('welcome');
             }   
             else
             {
