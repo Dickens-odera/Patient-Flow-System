@@ -1,3 +1,4 @@
+@include('includes.errors.custom')
 <div class="hidden">
   {{ $appointments = App\Bookings::where('doctor',Auth::user()->name)->get()}}
 
@@ -251,7 +252,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{ route('doctor.profile') }}" class="btn btn-default btn-flat">Profile</a>
+                  <a href="{{ route('doctor.profile',['id'=>Auth::user()->id]) }}" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   {{-- <a href="#" class="btn btn-default btn-flat">Sign out</a> --}}

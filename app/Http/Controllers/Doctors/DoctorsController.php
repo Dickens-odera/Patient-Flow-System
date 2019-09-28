@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Patients;
 use App\Bookings;
 use App\Doctors;
+use Image;
 use Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -23,13 +24,13 @@ class DoctorsController extends Controller
         //show the dashboard
         return view('doctor.dashboard');
     }
-    //profile
+    //show the doctor their profile
     public function profile(Request $request, $doctor_id = null)
     {
         $doctor_id = $request->id;
         if(!$doctor_id)
         {
-            $request->session()->flash('error','Invalid request');
+            $request->session()->flash('error','Invalid request format');
             return redirect()->intended(route('doctor.dashboard'));
         }
         else
@@ -44,6 +45,66 @@ class DoctorsController extends Controller
             else
             {
                 return view('doctor.profile.index', compact('doctor'));
+            }
+        }
+    }
+    //update the doctor's profile
+    public function updateProfile(Request $request, $doctor_id = null)
+    {
+        $doctor_id = $request->id;
+        if(!$doctor_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request,['id','required']);
+            $doctor = Doctors::where('id','=',Auth::user()->id)->where('name','=',Auth::user()->name)->first();
+            if(!$doctor)
+            {
+                $request->session()->flash('error','The requested doctor not found');
+                return redirect()->back();
+            }
+            else
+            {
+                $validator = Validator::make($request->all(),
+                [
+                    'name'=>'required',
+                    'email'=>'required|email',
+                    'phone'=>'required|phone',
+                    'avartar'=>'image|mimes:jpg,png|max:2048|nullable'
+                ]);
+                if($validator->fails())
+                {
+                    $request->session()->flash('error',$validator->errors());
+                    return redirect()->back();
+                }
+                else
+                {
+                    if($request->file('avartar'))
+                    {
+                        $doctor_photo = $request->file('avartar');
+                        $file_ext = $doctor_photo->getClientOriginalExtension();
+                        $file_name_to_save = "Dr ".$request->name.".".$file_ext;
+                        $path_to_file = public_path('uploads/images/doctors/'.$file_name_to_save);
+                        Image::make($doctor_photo->getRealPath())->resize(200, null, function($constraint)
+                        {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })->save($path_to_file);
+                    }
+                    if($doctor->update(['name'=>$request->name, 'email'=>$request->email,'phone'=>$request->phone,'avartar'=>$file_name_to_save]))
+                    {
+                        $request->session()->flash('success','Profile updated successfully');
+                        return redirect()->back();
+                    }
+                    else
+                    {
+                        $request->session()->flash('error','Failed to update your profile, try again');
+                        return redirect()->back();
+                    }
+                }
             }
         }
     }
@@ -120,9 +181,43 @@ class DoctorsController extends Controller
                 {
                     if($booking->update(['status'=>'approved']))
                     {
-                        //alert the patient in future implementations of this project
+                        //alert the patient with an sms message
+                        $patient = Bookings::where('id','=',$booking_id)->pluck('patient');
+                        $doctor = Bookings::where('id','=',$booking_id)->pluck('doctor');
+                        $url = "http://localhost:8000/patients/doctor/bookings/approved";
+                        $recipient_phone = Patients::where('name','=',$patient)->pluck('phone');
+                        $message = "Dear ".$patient.","."your appointment request to see Dr".$doctor." has been successfully approved, kindly check your portal at".$url."for mor information";
+                        $postData = array(
+                            'username'=>env('USERNAME'),
+                            'api_key'=>env('APIKEY'),
+                            'sender'=>env('SENDERID'),
+                            'to'=>$recipient_phone,
+                            'message'=>$message,
+                            'msgtype'=>env('MSGTYPE'),
+                            'dlr'=>env('DLR')
+                        );
+                        $ch = curl_init();
+                        curl_setopt_array($ch, array(
+                            CURLOPT_URL => env('URL'),
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_POST => true,
+                            CURLOPT_POSTFIELDS => $postData
+                        ));
+                        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
+                        $output = curl_exec($ch);
+                        if(curl_errno($ch))
+                        {
+                            $output = curl_error($ch);
+                        }
+                        curl_close();
                         $request->session()->flash('success','Patient appointment approved successfully');
                         return redirect()->to(route('doctor.patient.bookings.request'));
+                    }
+                    else
+                    {
+                        $request->session()->flash('error','Failed to approve the appointment status, try again');
+                        return redirect()->back()->withInput($request->only('patient','doctor','nurse','department','comment','date','time','status'));
                     }
                 }
             }
@@ -135,3 +230,4 @@ class DoctorsController extends Controller
         return view('doctor.patients.bookings.approved',compact('approved_bookings'));
     }
 }
+

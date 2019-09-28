@@ -65,12 +65,11 @@ Route::prefix('doctors')->group(function()
     Route::get('/logout','Auth\DoctorsLoginController@logout')->name('doctor.logout');
     Route::get('/dashboard','Doctors\DoctorsController@index')->name('doctor.dashboard');
     Route::get('/profile','Doctors\DoctorsController@profile')->name('doctor.profile');
-    Route::get('/profile','Doctors\DoctorsController@updateProfile')->name('doctor.profile.update');
+    Route::post('/profile','Doctors\DoctorsController@updateProfile')->name('doctor.profile.update');
     Route::get('/patient/bookings/requests','Doctors\DoctorsController@viewAllBookings')->name('doctor.patient.bookings.request');
     Route::get('/patient/booking/detail','Doctors\DoctorsController@viewPatientBookingDetail')->name('doctor.patient.booking.detail');
     Route::post('/patient/booking/approval','Doctors\DoctorsController@approveAppointmentBooking')->name('doctor.patient.booking.approve');
     Route::get('/patient/bookings/approved','Doctors\DoctorsController@showAllApprovedBookings')->name('doctor.patient.bookings.approved.all');
-
 });
 //patients routes
 Route::prefix('patients')->group(function()
