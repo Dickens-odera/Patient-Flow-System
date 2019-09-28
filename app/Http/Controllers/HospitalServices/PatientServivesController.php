@@ -127,6 +127,7 @@ class PatientServivesController extends Controller
                     $accident->patient = $request->patient_name;
                     $accident->location = $request->location;
                     $accident->street = $request->street;
+                    $accident->phone = $request->phone;
                     $accident->description = $request->comments;
                     $accident->save(); //send sms to nurse in the near future
 
@@ -138,6 +139,7 @@ class PatientServivesController extends Controller
                     $maternity_request->patient = $request->patient_name;
                     $maternity_request->location = $request->location;
                     $maternity_request->street = $request->street;
+                    $maternity_request->phone = $request->phone;
                     $maternity_request->description = $request->comments;
                     $maternity_request->save(); //send sms to nurse in the near future
                 }
@@ -148,6 +150,7 @@ class PatientServivesController extends Controller
                     $first_aid_request->patient = $request->patient_name;
                     $first_aid_request->location = $request->location;
                     $first_aid_request->street = $request->street;
+                    $first_aid_request->phone = $request->phone;
                     $first_aid_request->description = $request->comments;
                     $first_aid_request->save(); //send sms to nurse in the near future
                 }

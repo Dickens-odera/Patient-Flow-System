@@ -33,6 +33,7 @@ class StaffLoginController extends Controller
         else
         {
             //if the login attempt failed
+            $request->session()->flash('error','Invalid email or password');
             return redirect()->back()->withInput($request->only('email','remember'));
         }
     }

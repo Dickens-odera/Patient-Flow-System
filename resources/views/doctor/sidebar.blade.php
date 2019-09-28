@@ -73,27 +73,25 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('doctor.patient.bookings.request') }}"><i class="fa fa-circle-o"></i> All</a></li>
                 <li><a href="{{ route('doctor.patient.bookings.approved.all') }}"><i class="fa fa-circle-o"></i> Approved</a></li>
-                {{-- <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li> --}}
-                {{-- <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> --}}
               </ul>
             </li>
-            {{-- <li class="treeview">
+             <li class="treeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
-                <span>UI Elements</span>
+                <span>Emergencies</span>
                 <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i> General</a></li>
-                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> Icons</a></li>
-                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> Buttons</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>
+                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i> Accidents</a></li>
+                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> Maternity</a></li>
+                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> First Aid</a></li>
+                {{-- <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>
                 <li><a href="pages/UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li>
-                <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li>
+                <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li> --}}
               </ul>
-            </li> --}}
+            </li>
             {{-- <li class="treeview">
               <a href="#">
                 <i class="fa fa-edit"></i> <span>Forms</span>

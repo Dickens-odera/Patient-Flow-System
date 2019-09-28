@@ -1,4 +1,7 @@
- <!-- Left side column. contains the logo and sidebar -->
+<div class="hidden">
+  {{ $bookings_count = App\Bookings::where('patient','=',Auth::user()->name)->where('status','=','approved')->get()}}
+</div>
+<!-- Left side column. contains the logo and sidebar -->
  <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
@@ -73,7 +76,16 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="{{ route('patient.doctor.booking')}}"><i class="fa fa-circle-o"></i> New</a></li>
-                <li><a href="{{ route('patient.doctor.bookings.approved.all') }}"><i class="fa fa-circle-o"></i> Aprroved</a></li>
+                <li>
+                  <a href="{{ route('patient.doctor.bookings.approved.all') }}"><i class="fa fa-circle-o"></i>
+                     Aprroved
+                     <span class="pull-right-container">
+                        <small class="label pull-right bg-green">
+                        {{ count($bookings_count) }}
+                        </small>
+                      </span>
+                    </a>
+                </li>
                 <li><a href="{{ route('patient.doctor.bookings.history') }}"><i class="fa fa-circle-o"></i> Booking History</a></li>
                 {{-- <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li> --}}
                 {{-- <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> --}}

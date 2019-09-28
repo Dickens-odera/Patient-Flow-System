@@ -34,6 +34,7 @@ class PatientsLoginController extends Controller
         else
         {
             //if the login was not successful
+            $request->session()->flash('error','Invalid email or password');
             return redirect()->back()->withInput($request->only('email','remember'));
         }
     }

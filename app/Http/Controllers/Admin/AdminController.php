@@ -48,6 +48,7 @@ class AdminController extends Controller
         if(!$adm_id)
         {
             $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
         }
         else
         {
@@ -87,9 +88,14 @@ class AdminController extends Controller
     }
     /**************************** DOCTORS SECTION OF THE ADMIN *************************/
     //show a list of all doctors
-    public function viewAllDoctors()
+    public function viewAllDoctors(Request $request)
     {
         $doctors = Doctors::latest()->paginate(10);
+        if(!$doctors)
+        {
+            $request->session()->flash('error','Doctor data not found');
+            return redirect()->back();
+        }
         return view('admin.doctor.index', compact('doctors'));
     }
     //show a form to enable the admin to add a new doctor
@@ -153,7 +159,8 @@ class AdminController extends Controller
             if($doctor->save())
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
-                $message = "Dear ".$request->name." Kindly use these credentials to <a href='https://localhost:8000/doctor/doctorlogin'>login here</a>"." Username:".$request->email.". Password:".$request->password;
+                $url = "http://localhost:8000/doctors/doctorlogin";
+                $message = "Dear ".$request->name." Kindly use these credentials to login into ".$url. " Username:".$request->email.". Password:".$request->password;
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
@@ -385,8 +392,9 @@ class AdminController extends Controller
         if($nurse->save())
         {
             //if the nurse was successfully added into the database, show a success message
-            $message = "Dear ".$request->name."Kindly use these credentials to log into your portal <a href='http://localhost:8000/nurses/nurseslogin/'>here</a>"."Username:".$request->email." Password".$request->password;
-        
+            $url = "http://localhost:8000/nurses/nurseslogin";
+            $message = "Dear ".$request->name."Kindly use these credentials to log into your portal.".$url. "Username:".$request->email." Password".$request->password;
+
                 $data = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
@@ -422,17 +430,25 @@ class AdminController extends Controller
         }
     }
     //list all the nurses
-    public function viewAllNurses()
+    public function viewAllNurses(Request $request)
     {
         $nurses = Nurse::latest()->paginate(10);
-        return view('admin.nurses.index', compact('nurses'));
+        if(!$nurses)
+        {
+            $request->session()->flash('error','No Nurses data found');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('admin.nurses.index', compact('nurses'));
+        }
     }
     //show the edit form with the nurse's information
-    public function showNurseEditForm(Request $request)
+    public function showNurseEditForm(Request $request, $nurse_id = null)
     {
         //determine whether the id of the nurse is attached to the request
-        $id = $request->id;
-        if(!$id)
+        $nurse_id = $request->id;
+        if(!$nurse_id)
         {
             //if not so,
             $request->session()->flash('error','Invalid request format');
@@ -442,16 +458,16 @@ class AdminController extends Controller
         {
             //set the validation
             $this->validate($request,['id'=>'required']);
-            $nurse = Nurse::where('id',$id)->first();
+            $nurse = Nurse::where('id',$nurse_id)->first();
             return view('admin.nurses.edit', compact('nurse'));
         }
     }
     //update the details pertaining to a particular nurse
-    public function updateNurseInformation(Request $request)
+    public function updateNurseInformation(Request $request, $nurse_id = null)
     {
         //get the id of the nurse
-        $id = $request->id;
-        if(!$id)
+        $nurse_id = $request->id;
+        if(!$nurse_id)
         {
             $request->session()->flash('error','Invalid request format');
             return redirect()->back();
@@ -474,7 +490,7 @@ class AdminController extends Controller
         else
         {
             //if the validation rules have been met, get the input data from the form
-            $nurse = Nurse::where('id',$id)->first();
+            $nurse = Nurse::where('id',$nurse_id)->first();
             $nurse->name = $request->name;
             $nurse->email = $request->email;
             $nurse->phone = $request->phone;
@@ -537,10 +553,18 @@ class AdminController extends Controller
     /*********************** END OF ADMIN NURSES FUNCTIONALITY *******************************/
     /*********************** ADMIN DEOARTMENTS FUNTIONALITY *********************************/
     //list all the available departments
-    public function viewAllDepartments()
+    public function viewAllDepartments(Request $request)
     {
        $departments = Departments::latest()->paginate(10);
-       return view('admin.departments.index', compact('departments'));
+       if(!$departments)
+       {
+           $request->session()->flash('error','No departments found');
+           return redirect()->back();
+       }
+       else
+       {
+        return view('admin.departments.index', compact('departments'));
+       }
     }
     //show te form to add a new department
     public function showDepartmentsForm()
@@ -679,10 +703,18 @@ class AdminController extends Controller
 
     /*********************** ADMIN-PATIENTS FUNCTIONALITIES ***********************/
     //view all the patients in the system
-    public function viewAllPatients()
+    public function viewAllPatients(Request $request)
     {
         $patients = Patients::latest()->paginate(10);
-        return view('admin.patients.index', compact('patients'));
+        if(!$patients)
+        {
+            $request->session()->flash('error','No patients found');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('admin.patients.index', compact('patients'));
+        }
     }
     /*********************** END ADMIN-PATIENTS FUNCTIONALITIES *********************/
 }

@@ -34,6 +34,7 @@ class AdminLoginController extends Controller
         else
         {
             //if login failed, redirect the user to their previous page, currently login page
+            $request->session()->flash('error','Invalid email or password');
             return redirect()->back()->withInput($request->only('email','remember'));
         }
     }

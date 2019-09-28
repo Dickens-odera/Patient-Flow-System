@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Patients;
 use App\Bookings;
+use App\Doctors;
 use Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -22,11 +23,43 @@ class DoctorsController extends Controller
         //show the dashboard
         return view('doctor.dashboard');
     }
+    //profile
+    public function profile(Request $request, $doctor_id = null)
+    {
+        $doctor_id = $request->id;
+        if(!$doctor_id)
+        {
+            $request->session()->flash('error','Invalid request');
+            return redirect()->intended(route('doctor.dashboard'));
+        }
+        else
+        {
+            $this->validate($request,['id'=>'required']);
+            $doctor = Doctors::where('name','=',Auth::user()->name)->where('id','=',$doctor_id)->first();
+            if(!$doctor)
+            {
+                $request->session()->flash('error','No doctor with that particular id found');
+                return  redirect()->intended(route('doctor.dashboard'));
+            }
+            else
+            {
+                return view('doctor.profile.index', compact('doctor'));
+            }
+        }
+    }
     //list the patient bookings
-    public function viewAllBookings()
+    public function viewAllBookings(Request $request)
     {
         $patient_bookings = Bookings::where('doctor',Auth::user()->name)->latest()->paginate(10);
-        return view('doctor.patients.bookings.index', compact('patient_bookings'));
+        if(!$patient_bookings)
+        {
+            $request->session()->flash('error','No patient bookings yet');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('doctor.patients.bookings.index', compact('patient_bookings'));
+        }
     }
     //view the details of a single patient booking
     public function viewPatientBookingDetail(Request $request,  $booking_id=null)

@@ -108,10 +108,18 @@ class PatientsController extends Controller
         }
     }
     //view bookings history
-    public function viewHistory()
+    public function viewHistory(Request $request)
     {
-        $bookings = Bookings::latest()->paginate(10);
-        return view('patients.bookings.history', compact('bookings'));
+        $bookings = Bookings::where('patient','=',Auth::user()->name)->latest()->paginate(5);
+        if(!$bookings)
+        {
+            $request->session()->flash('error','No available bookings history');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('patients.bookings.history', compact('bookings'));
+        }
     }
     //let a patient cancel a booking that is still pending
     public function cancelBooking(Request $request, $booking_id = null)
@@ -183,7 +191,7 @@ class PatientsController extends Controller
                 $status = $booking_value_item->status;
                 if($status === 'approved')
                 {
-                    $request->session()->flash('you cannot delete an alraedy approved booking request');
+                    $request->session()->flash('error','you cannot delete an alraedy approved booking request');
                     return redirect()->back();
                 }
                 else
@@ -205,7 +213,7 @@ class PatientsController extends Controller
     //list all the approved bookings
     public function showAllApprovedBookings()
     {
-        $approved_bookings = Bookings::where('status','approved')->latest()->paginate(10);
+        $approved_bookings = Bookings::where('patient','=',Auth::user()->name)->where('status','=','approved')->latest()->paginate(10);
         return view('patients.bookings.approved',compact('approved_bookings'));
     }
     //patient profile
@@ -272,6 +280,28 @@ class PatientsController extends Controller
                     $request->session()->flash('error','Failed to update profile, try again');
                     return redirect()->back()->withInput($request->only('name','email','avartar'));
                 }
+            }
+        }
+    }
+    //get all the approved doctor bookings
+    public function allApprovedDrPatientBookings(Request $request)
+    {
+        $approved_bookings = Bookings::where('patient','=',Auth::user()->name)->where('status','=','approved')->get();
+        if(!$approved_bookings)
+        {
+            $request->session()->flash('error','No Approved Bookings yet');
+            return redirect()->back();
+        }
+        else
+        {
+            $booking_count = count($approved_bookings);
+            if($booking_count > 0)
+            {
+                return view('patients.sidebar',compact('booking_count'));
+            }
+            else
+            {
+                return false;
             }
         }
     }

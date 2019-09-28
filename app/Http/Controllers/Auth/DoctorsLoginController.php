@@ -33,6 +33,7 @@ class DoctorsLoginController extends Controller
         }
         else
         {
+            $request->session()->flash('error','Invalid email or password');
             return redirect()->back()->withInput($request->only('email','remember'));
         }
     }
