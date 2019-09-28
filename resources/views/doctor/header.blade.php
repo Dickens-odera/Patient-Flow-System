@@ -1,4 +1,3 @@
-@include('includes.errors.custom')
 <div class="hidden">
   {{ $appointments = App\Bookings::where('doctor',Auth::user()->name)->get()}}
 

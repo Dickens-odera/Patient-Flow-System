@@ -210,7 +210,7 @@ class DoctorsController extends Controller
                         {
                             $output = curl_error($ch);
                         }
-                        curl_close();
+                        curl_close($ch);
                         $request->session()->flash('success','Patient appointment approved successfully');
                         return redirect()->to(route('doctor.patient.bookings.request'));
                     }
