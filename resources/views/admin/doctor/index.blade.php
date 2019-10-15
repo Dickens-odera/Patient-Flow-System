@@ -1,7 +1,7 @@
 @extends('admin.partials.includes.base')
 @section('content')
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
+    {{-- <div class="col-md-2"></div> --}}
+    <div class="col-md-12">
         <div class="box">
             <div class="box-header bg-info text-uppercase text-white">{{ __('All Doctors') }}</div>
             @include('includes.errors.custom')
@@ -19,7 +19,6 @@
                         @if(count($doctors) > 0)
                             @foreach($doctors as $key=>$value)
                                 <tbody>
-                                    {{ $doctors->links() }}
                                     <td>{{ $value->id }}</td>
                                     <td><img src="/storage/uploads/images/doctors/{{ $value->avartar }}" alt="{{$value->name."'s passport"}}" style="width:50px; height:30px; border-radius:50%"></td>
                                     <td>{{ $value->name }}</td>
@@ -36,11 +35,12 @@
                         @endif
                     </thead>
                 </table>
+                {{ $doctors->links() }}
             </div>
             <div class="box-footer">
                 <!-- Some footer content here -->
             </div>
         </div>
     </div>
-    <div class="col-md-2"></div>
+    {{-- <div class="col-md-2"></div> --}}
 @endsection
