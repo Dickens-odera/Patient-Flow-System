@@ -121,7 +121,8 @@ class AdminController extends Controller
         if($validator->fails())
         {
             //if the validation rules are not met
-            return redirect()->back()->with('error',$validator->errors());
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
         }
         else
         {
@@ -136,7 +137,7 @@ class AdminController extends Controller
             {
                 //if the password and the confirmation pasword do not match
                 $request->session()->flash('error','Password mismatch, try again');
-                return redirect()->back()->withInput($request->only('name','email','phone'));
+                return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
             }
             else
             {
@@ -160,7 +161,7 @@ class AdminController extends Controller
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
                 $url = "http://localhost:8000/doctors/doctorlogin";
-                $message = "Dear ".$request->name." Kindly use these credentials to login into ".$url. " Username:".$request->email.". Password:".$request->password;
+                $message = "Dear ".$request->name." Kindly use these credentials to log into".$url."Username:".$request->email.". Password:".$request->password;
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
@@ -193,7 +194,7 @@ class AdminController extends Controller
             {
                 //if the process of adding the new doctor failed
                 $request->session()->flash('error','Failed to add the new doctor, try again');
-                return redirect()->back();
+                return redirect()->back()->withInput($request->only('name','email','phone','avartar'));
             }
         }
     }

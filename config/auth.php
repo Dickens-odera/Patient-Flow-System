@@ -165,8 +165,8 @@ return [
         ],
         'admins'=>[
             'provider'=>'admins',
-            'table=>'=>'password_resets',
-             'expire'=>15
+            'table'=>'password_resets',
+            'expire'=>60
         ],
         'patients'=>[
             'provider'=>'patients',

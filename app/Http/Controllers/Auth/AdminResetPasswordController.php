@@ -33,7 +33,7 @@ class AdminResetPasswordController extends Controller
     }
     public function reset(Request $request)
     {
-
+        
     }
 
 }
