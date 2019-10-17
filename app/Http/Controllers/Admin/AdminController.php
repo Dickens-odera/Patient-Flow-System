@@ -112,7 +112,7 @@ class AdminController extends Controller
             'email'=>'required|email|unique:doctors',
             'password'=>'required',
             'confirm_password'=>'required',
-            'phone'=>'required|phone|max:12|unique:doctors',
+            'phone'=>'required|phone|max:12',
             'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'type'=>'required'
         );
@@ -161,7 +161,7 @@ class AdminController extends Controller
             {
                 //if the new doctor was added successfully, send them their credentials via sms(in future) or email
                 $url = "http://localhost:8000/doctors/doctorlogin";
-                $message = "Dear ".$request->name." Kindly use these credentials to log into".$url."Username:".$request->email.". Password:".$request->password;
+                $message = "Dear ".$request->name." Kindly use these credentials to log into"."<a href=`{{ route('doctor.login') }}` "."Username:".$request->email.". Password:".$request->password;
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
