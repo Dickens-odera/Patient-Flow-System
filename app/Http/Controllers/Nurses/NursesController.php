@@ -15,6 +15,7 @@ use App\Maternity;
 use App\Doctors;
 use App\Departments;
 use App\Patients;
+use App\NurseAccidentResponse as Response;
 class NursesController extends Controller
 {
     //authentication guard
@@ -149,7 +150,7 @@ class NursesController extends Controller
         $accident_id = $request->id;
         if(!$accident_id)
         {
-            $request->session()->flash('error','Invalid request format');
+            $request->session()->flash('error','Invalid Request Format');
             return redirect()->back();
         }
         else
@@ -171,16 +172,55 @@ class NursesController extends Controller
                 else
                 {
                     $patient = $accident->patient_name;
+                    $patient_id = $accident->id;
                     if(!$patient)
                     {
                         $request->session()->flash('error','The patient could not be found');
                         return redirect()->back();
                     }
                     //dd($patient);
-                    $doctor = Doctors::latest()->get();
-                    $department = Departments::latest()->get();
-                    return view('nurses.emergencies.accidents.response', compact(['patient','accident','doctor','department']));
+                    $doctors = Doctors::latest()->get();
+                    return view('nurses.emergencies.accidents.response', compact(['patient','accident','doctors','patient_id']));
                 }
+            }
+        }
+    }
+    //send the above response to the doctor
+    public function sendAccidentResponse(Request $request, $accident_id = null)
+    {
+        $accident_id = $request->id;
+        if(!$accident_id)
+        {
+            $request->session()->flash('please check the request format before you proceed');
+            return redirect()->back();
+        }
+        $validator = Validator::make($request->all(),array(
+            'patient'=>'required',
+            'doctor'=>'required',
+            'comments'=>'required',
+            'accident_type'=>'required',
+            'damage_type'=>'required'
+        ));
+        if($validator->fails())
+        {
+            $request->session()->flash('error',$validator->errors());
+            return redirect()->back()->withInput($request->only('patient','doctor','comments','accident_type','damage_type'));
+        }
+        else
+        {
+            $response = new Response;
+            $response->patient = $request->patient;
+            $response->nurse = Auth::user()->name;
+            $response->doctor = $request->doctor;
+            $response->comments = $request->comments;
+            $response->accident_type = $request->accident_type;
+            $response->damage_type = $request->damage_type;
+
+            if($response->save())
+            {
+                //send sms to the doctor alerting them of the nurse response data
+                $request->session()->flash('success','Accident successfully reported to Doctor '.$request->doctor);
+                return redirect()->to(route('nurse.emergencies.accident.response'));
             }
         }
     }

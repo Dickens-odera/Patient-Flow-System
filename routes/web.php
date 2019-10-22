@@ -107,7 +107,8 @@ Route::prefix('nurses')->group(function()
     Route::get('/emergencies/reported-first-aid-requests','Nurses\NursesController@viewAllReportedfirstAid')->name('nurse.emergencies.first_aid.all');
     Route::get('/emergencies/reported-first-aid-request-details','Nurses\NursesController@emergencyFirstAidDetail')->name('nurse.emergencies.first_aid.detail');
     //emergency response
-    Route::get('emergencies/reported-accident/response','Nurses\NursesController@emergencyAccidentResponse')->name('nurse.emergencies.accident.response');
+    Route::get('/emergencies/reported-accident/response','Nurses\NursesController@emergencyAccidentResponse')->name('nurse.emergencies.accident.response');
+    Route::post('/emergencies/reported-accident/response','Nurses\NursesController@sendAccidentResponse')->name('nurse.emergencies.accident.response.post');
 });
 //staff routes
 Route::prefix('staff')->group(function()

@@ -19,7 +19,6 @@ class NurseAccidentResponse extends Migration
             $table->string('patient')->nullable();
             $table->string('nurse')->nullable();
             $table->string('doctor')->nullable();
-            $table->string('department')->nullable();
             $table->text('comments')->nullable();
             $table->enum('accident_type',['burns','car','mortorcycle','other'])->default('other');
             $table->enum('damage_type',['savere','other'])->default('other');
