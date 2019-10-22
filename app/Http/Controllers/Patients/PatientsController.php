@@ -238,6 +238,7 @@ class PatientsController extends Controller
         $rules = array(
             'name'=>'required',
             'email'=>'required|email',
+            'phone'=>'required|phone',
             'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
         );   
         $validator = Validator::make($request->all(),$rules);
@@ -257,6 +258,7 @@ class PatientsController extends Controller
                 $patient = Patients::where('id',$patient_id)->first();
                 $patient->name = $request->name;
                 $patient->email = $request->email;
+                $patient->phone = $request->phone;
                 if($request->file('avartar'))
                 {
                     $passport_photo = $request->file('avartar');

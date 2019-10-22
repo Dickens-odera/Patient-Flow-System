@@ -24,6 +24,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                            <label for="phone" class="col-md-4 form-label text-md-right">{{ __('Phone') }}</label>
+                            <div class="col-md-8">
+                                <input type="text" name="phone" class="form-control" value="{{ $patient_details->phone }}">
+                            </div>
+                        </div>
+                    <div class="form-group row">
                             <label for="avartar" class="col-md-4 form-label text-md-right">{{ __('Passport Photo') }}</label>
                             <div class="col-md-8">
                                 <div class="col-md-8">

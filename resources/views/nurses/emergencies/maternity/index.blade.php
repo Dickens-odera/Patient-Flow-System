@@ -30,7 +30,7 @@
                                     <td>{{ $value->created_at }}</td>
                                     <td class="btn-group btn-group-sm">
                                         <a href="{{ route('nurse.emergencies.maternity.detail',['id'=>$value->id]) }}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> {{ __('View') }}</a>
-                                        <a href="" class="btn btn-sm btn-success"><i class="fa fa-edit"></i> {{ __('Edit') }}</a>
+                                        <a href="" class="btn btn-sm btn-success"><i class="fa fa-edit"></i> {{ __('Respond') }}</a>
                                         <a href="" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> {{ __('Delete') }}</a>
                                     </td>
                                 </tbody>

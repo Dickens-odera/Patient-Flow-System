@@ -1,8 +1,7 @@
 @extends('patients.main')
 @include('patients.header')
 @section('content')
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="box">
             <div class="box-header bg-info text-uppercase text-white">{{ __('Your Aproved Booking') }}</div>
             @include('includes.errors.custom')
@@ -42,5 +41,4 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2"></div>
 @endsection

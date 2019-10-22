@@ -52,7 +52,7 @@
                             <i class="fa fa-send"></i> {{ __('Aprrove Appointment') }}
                         </button>
                         <a href="{{ route('doctor.dashboard') }}" class="btn btn-danger btn-sm pull-right">
-                            <i class="fa fa-window-close"></i> Cancel
+                            <i class="fa fa-window-close"></i> Exit
                         </a>
                     </div>
                 </form>

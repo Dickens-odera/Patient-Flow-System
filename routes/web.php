@@ -20,7 +20,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 //admin routes
 Route::prefix('admin')->group(function()
 {   
-    //admi personal urls
+    //admin personal urls
     Route::get('/adminlogin','Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('/adminlogin','Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/logout','Auth\AdminLoginController@logout')->name('admin.logout');
@@ -99,12 +99,15 @@ Route::prefix('nurses')->group(function()
     Route::post('/nurseslogin','Auth\NursesLoginController@login')->name('nurse.login.submit');
     Route::get('/logout','Auth\NursesLoginController@logout')->name('nurse.logout');
     Route::get('/dashboard','Nurses\NursesController@index')->name('nurse.dashboard');
+    //emergncies
     Route::get('/emergencies/reported-accidents','Nurses\NursesController@viewAllReportedAccidents')->name('nurse.emergencies.accidents.all');
     Route::get('/emergencies/reported-accidents-detail','Nurses\NursesController@emergencyAccidentDetails')->name('nurse.emergency.accident.detail');
     Route::get('/emergencies/reported-maternity','Nurses\NursesController@viewAllReportedMaternity')->name('nurse.emergencies.maternity.all');
     Route::get('/emergencies/reported-maternity-detail','Nurses\NursesController@emergencyMaternityDetail')->name('nurse.emergencies.maternity.detail');
     Route::get('/emergencies/reported-first-aid-requests','Nurses\NursesController@viewAllReportedfirstAid')->name('nurse.emergencies.first_aid.all');
     Route::get('/emergencies/reported-first-aid-request-details','Nurses\NursesController@emergencyFirstAidDetail')->name('nurse.emergencies.first_aid.detail');
+    //emergency response
+    Route::get('emergencies/reported-accident/response','Nurses\NursesController@emergencyAccidentResponse')->name('nurse.emergencies.accident.response');
 });
 //staff routes
 Route::prefix('staff')->group(function()

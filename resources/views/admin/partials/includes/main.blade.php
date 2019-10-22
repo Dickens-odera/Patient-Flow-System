@@ -18,10 +18,10 @@
             <div class="small-box bg-aqua">
               <div class="inner">
                 <div class="hidden">
-                  {{ $doctors = App\Doctors::latest()->paginate(5) }}
-                  {{ $nurses = App\Nurse::latest()->paginate(5) }}
-                  {{ $departmets= App\Departments::latest()->paginate(5) }}
-                  {{ $patients = App\Patients::latest()->paginate(5) }}
+                  {{ $doctors = App\Doctors::latest()->get() }}
+                  {{ $nurses = App\Nurse::latest()->get() }}
+                  {{ $departmets= App\Departments::latest()->get() }}
+                  {{ $patients = App\Patients::latest()->get() }}
                 </div>
                 <h3>{{ count($doctors)}}</h3>
   
@@ -75,7 +75,7 @@
               <div class="icon">
                 <i class="ion ion-man"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="{{ route('admin.patients.view.all') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -113,7 +113,6 @@
                         @endforeach
                       @endif
                     </table>
-                    {{ $patients->links() }}
                   </div>
                   <div class="box-footer"></div>
                 </div>
@@ -146,7 +145,6 @@
                       @endforeach
                     @endif
                   </table>
-                  {{ $nurses->links() }}
               </div>
               <div class="box-footer">
                 <!--  Some footer content go here-->
@@ -183,7 +181,6 @@
                           @endforeach
                       @endif
                     </table>
-                    {{ $doctors->links() }}
                   </div>
                   <div class="box-footer"></div>
                 </div>
@@ -208,7 +205,6 @@
                         @endforeach
                       @endif
                     </table>
-                    {{ $departmets->links() }}
                   </div>
                   <div class="box-footer"></div>
                 </div>

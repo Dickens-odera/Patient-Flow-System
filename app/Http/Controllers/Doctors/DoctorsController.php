@@ -161,6 +161,7 @@ class DoctorsController extends Controller
             if($validator->fails())
             {
                 $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
             }
             else
             {
@@ -182,11 +183,11 @@ class DoctorsController extends Controller
                     if($booking->update(['status'=>'approved']))
                     {
                         //alert the patient with an sms message
-                        $patient = Bookings::where('id','=',$booking_id)->pluck('patient');
-                        $doctor = Bookings::where('id','=',$booking_id)->pluck('doctor');
+                        $patient = Bookings::where('id','=',$booking_id)->first()->pluck('patient');
+                        $doctor = Bookings::where('id','=',$booking_id)->first()->pluck('doctor');
                         $url = "http://localhost:8000/patients/doctor/bookings/approved";
-                        $recipient_phone = Patients::where('name','=',$patient)->pluck('phone');
-                        $message = "Dear ".$patient.","."your appointment request to see Dr".$doctor." has been successfully approved, kindly check your portal at".$url."for mor information";
+                        $recipient_phone = Patients::where('name','=',$patient)->first()->pluck('phone');
+                        $message = "Dear ".$patient.","."your appointment request to see Dr".$doctor." has been successfully approved, kindly check your portal at".$url."for more information";
                         $postData = array(
                             'username'=>env('USERNAME'),
                             'api_key'=>env('APIKEY'),

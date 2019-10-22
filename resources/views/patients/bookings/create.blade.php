@@ -27,8 +27,8 @@
                         <div class="col-md-8">
                             <select name="department" id="department" class="form-control">
                                 @if(count($departments) > 0)
+                                <option value="">Select...</option>
                                     @foreach($departments as $key=>$value)
-                                        <option value="">Select...</option>
                                         <option value="{{ $value->name }}">{{ $value->name }}</option>
                                     @endforeach
                                 @endif

@@ -159,9 +159,9 @@ class AdminController extends Controller
             }
             if($doctor->save())
             {
-                //if the new doctor was added successfully, send them their credentials via sms(in future) or email
+                //if the new doctor was added successfully, send them their credentials via sms
                 $url = "http://localhost:8000/doctors/doctorlogin";
-                $message = "Dear ".$request->name." Kindly use these credentials to log into"."<a href=`{{ route('doctor.login') }}` "."Username:".$request->email.". Password:".$request->password;
+                $message = "Dear ".$request->name." Kindly use these credentials to log into"." ".$url ." Username: ".$request->email.". Password: ".$request->password;
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
@@ -339,8 +339,8 @@ class AdminController extends Controller
         //create validation rules for the incoming request data
         $rules = array(
             'name'=>'required',
-            'email'=>'required|email',
-            'phone'=>'required|phone',
+            'email'=>'required|email|unique:nurses',
+            'phone'=>'required|phone|unique:nurses',
             'password'=>'required',
             'confirm_password'=>'required',
             'avartar'=>'nullable|image|mimes:jpeg,jpg,png|max:2048'
@@ -394,7 +394,7 @@ class AdminController extends Controller
         {
             //if the nurse was successfully added into the database, show a success message
             $url = "http://localhost:8000/nurses/nurseslogin";
-            $message = "Dear ".$request->name."Kindly use these credentials to log into your portal.".$url. "Username:".$request->email." Password".$request->password;
+            $message = "Dear ".$request->name."Kindly use these credentials to log into your portal"." ".$url. "Username:".$request->email." Password".$request->password;
 
                 $data = array(
                     'username'=>env('USERNAME'),

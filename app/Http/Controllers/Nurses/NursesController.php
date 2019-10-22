@@ -12,6 +12,9 @@ use App\Emergencies;
 use App\Accidents;
 use App\FirstAid;
 use App\Maternity;
+use App\Doctors;
+use App\Departments;
+use App\Patients;
 class NursesController extends Controller
 {
     //authentication guard
@@ -131,7 +134,7 @@ class NursesController extends Controller
             $first_aid_request = Emergencies::where('id','=',$first_aid_request_id)->first();
             if(!$first_aid_request)
             {
-                $request->session()->flash('error','Fitst Aid request data not found');
+                $request->session()->flash('error','First Aid request data not found');
                 return redirect()->back();
             }
             else
@@ -140,5 +143,47 @@ class NursesController extends Controller
             }
         }
     }
+    /********************************* Emergency Responses ***********************/
+    public function emergencyAccidentResponse(Request $request,$accident_id = null)
+    {
+        $accident_id = $request->id;
+        if(!$accident_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $validator = Validator::make($request->all(),['id'=>'required']);
+            if($validator->fails())
+            {
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
+            }
+            else
+            {
+                $accident = Emergencies::where('id','=',$accident_id)->where('type','=','accident')->where('status','=','pending')->first();
+                if(!$accident)
+                {
+                    $request->session()->flash('error','No Accident information found');
+                    return redirect()->back();
+                }
+                else
+                {
+                    $patient = $accident->patient_name;
+                    if(!$patient)
+                    {
+                        $request->session()->flash('error','The patient could not be found');
+                        return redirect()->back();
+                    }
+                    //dd($patient);
+                    $doctor = Doctors::latest()->get();
+                    $department = Departments::latest()->get();
+                    return view('nurses.emergencies.accidents.response', compact(['patient','accident','doctor','department']));
+                }
+            }
+        }
+    }
+    /********************************* End of Emergency Responses Logic ********************/
     /**********************  End Emergencies ***********************************/
 }
