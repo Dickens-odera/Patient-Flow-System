@@ -75,6 +75,11 @@ Route::prefix('doctors')->group(function()
     Route::get('/patient/booking/detail','Doctors\DoctorsController@viewPatientBookingDetail')->name('doctor.patient.booking.detail');
     Route::post('/patient/booking/approval','Doctors\DoctorsController@approveAppointmentBooking')->name('doctor.patient.booking.approve');
     Route::get('/patient/bookings/approved','Doctors\DoctorsController@showAllApprovedBookings')->name('doctor.patient.bookings.approved.all');
+
+    //emergencies
+    Route::get('/emergencies/accidents','Doctors\DoctorsController@listAllAccidentsFromNurse')->name('doctor.emergencies.accidents');
+    Route::get('/emergencies/accident','Doctors\DoctorsController@viewAccidentDetail')->name('doctor.emergencies.accident.detail');
+    Route::get('/emergencies/accident/delete','Doctors\DoctorsController@removeAccidentDetail')->name('doctor.emergencies.accident.delete');
 });
 //patients routes
 Route::prefix('patients')->group(function()

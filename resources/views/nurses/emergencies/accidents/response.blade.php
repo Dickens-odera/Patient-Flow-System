@@ -9,7 +9,7 @@
         <div class="header bg-info text-white text-uppercase">
         </div>
         <div class="box-body">
-                <form action="{{ route('nurse.emergencies.accident.response.post',['id'=>$accident->id]) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('nurse.emergencies.accident.response.post') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
                         <label for="patient" class="col-md-4 form-label text-md-right">{{ __('Patient') }}</label>

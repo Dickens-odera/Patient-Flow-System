@@ -13,9 +13,10 @@ use App\Accidents;
 use App\FirstAid;
 use App\Maternity;
 use App\Doctors;
+use App\Nurse;
 use App\Departments;
 use App\Patients;
-use App\NurseAccidentResponse as Response;
+use App\NurseAccidentResponse as ResponseState;
 class NursesController extends Controller
 {
     //authentication guard
@@ -164,6 +165,7 @@ class NursesController extends Controller
             else
             {
                 $accident = Emergencies::where('id','=',$accident_id)->where('type','=','accident')->where('status','=','pending')->first();
+                //$accident = Emergencies::where('id','=',$accident_id)->where('type','=','accident')->first();
                 if(!$accident)
                 {
                     $request->session()->flash('error','No Accident information found');
@@ -172,13 +174,14 @@ class NursesController extends Controller
                 else
                 {
                     $patient = $accident->patient_name;
+                    $pat_id = $accident->id;
                     $patient_id = $accident->id;
                     if(!$patient)
                     {
                         $request->session()->flash('error','The patient could not be found');
                         return redirect()->back();
                     }
-                    //dd($patient);
+                    //dd($pat_id);
                     $doctors = Doctors::latest()->get();
                     return view('nurses.emergencies.accidents.response', compact(['patient','accident','doctors','patient_id']));
                 }
@@ -186,14 +189,8 @@ class NursesController extends Controller
         }
     }
     //send the above response to the doctor
-    public function sendAccidentResponse(Request $request, $accident_id = null)
+    public function sendAccidentResponse(Request $request)
     {
-        $accident_id = $request->id;
-        if(!$accident_id)
-        {
-            $request->session()->flash('please check the request format before you proceed');
-            return redirect()->back();
-        }
         $validator = Validator::make($request->all(),array(
             'patient'=>'required',
             'doctor'=>'required',
@@ -208,19 +205,49 @@ class NursesController extends Controller
         }
         else
         {
-            $response = new Response;
+            $response = new ResponseState;
             $response->patient = $request->patient;
-            $response->nurse = Auth::user()->name;
+            $nurse = Nurse::where('name','=',Auth::user()->name)->first();
+            $response->nurse = $nurse->name;
+            $doctor = $request->doctor;
             $response->doctor = $request->doctor;
             $response->comments = $request->comments;
             $response->accident_type = $request->accident_type;
             $response->damage_type = $request->damage_type;
-
             if($response->save())
             {
+                //Emergencies::where('patient_name','=',$request->patient)->where('id','=',$this->id)->update(['status'=>'complete']);
                 //send sms to the doctor alerting them of the nurse response data
+                $url = "http://localhost:8000/patients/doctor/bookings/approved";
+                $recipient_phone = Doctors::where('name','=',$doctor)->pluck('phone');
+                //dd($recipient_phone);
+                $message = "Dear ".$doctor.","."your appointment request to see Dr".$doctor." You have received a request from ".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
+                $postData = array(
+                    'username'=>env('USERNAME'),
+                    'api_key'=>env('APIKEY'),
+                    'sender'=>env('SENDERID'),
+                    'to'=>$recipient_phone,
+                    'message'=>$message,
+                    'msgtype'=>env('MSGTYPE'),
+                    'dlr'=>env('DLR')
+                );
+                    $ch = curl_init();
+                    curl_setopt_array($ch, array(
+                            CURLOPT_URL => env('URL'),
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_POST => true,
+                            CURLOPT_POSTFIELDS => $postData
+                        ));
+                    curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
+                    $output = curl_exec($ch);
+                    if(curl_errno($ch))
+                        {
+                            $output = curl_error($ch);
+                        }
+                        curl_close($ch);
                 $request->session()->flash('success','Accident successfully reported to Doctor '.$request->doctor);
-                return redirect()->to(route('nurse.emergencies.accident.response'));
+                return redirect()->to(route('nurse.emergencies.accidents.all'));
             }
         }
     }

@@ -9,6 +9,11 @@ use App\Bookings;
 use App\Doctors;
 use Image;
 use Auth;
+use App\Emergencies;
+use App\Accidents;
+use App\Maternity;
+use App\FirstAid;
+use App\NurseAccidentResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
@@ -230,5 +235,73 @@ class DoctorsController extends Controller
         $approved_bookings = Bookings::where('status','approved')->where('doctor',Auth::user()->name)->latest()->paginate(10);
         return view('doctor.patients.bookings.approved',compact('approved_bookings'));
     }
+    /************************** EMERGENCIES ******************/
+    //ACCIDENTS
+    public function listAllAccidentsFromNurse(request $request)
+    {
+        $reported_accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->get();
+        if(!$reported_accidents)
+        {
+            $request->session()->flash('error','No accident data found');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('doctor.emergencies.accidents.index',compact('reported_accidents'));
+        }
+    }
+    //single accident detail
+    public function viewAccidentDetail(Request $request, $accident_rep_id = null)
+    {
+        $accident_rep_id = $request->id;
+        if(!$accident_rep_id)
+        {
+            $request->session()->flash('error','Inavalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request, ['id'=>'required']);
+            $accident = NurseAccidentResponse::where('id','=',$accident_rep_id)->where('doctor','=',Auth::user()->name)->get();
+            if(!$accident)
+            {
+                $request->session()->flash('error','No accident information found, try again');
+                return redirect()->back();
+            }
+            else
+            {
+                return view('doctor.emergencies.accidents.detail',compact('accident'));
+            }
+        }   
+    }
+    //delete a single accident record
+    public function removeAccidentDetail(Request $request, $accident_id = null)
+    {
+        $accident_id = $request->id;
+        if(!$accident_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request,['id'=>'required']);
+            $accident = NurseAccidentResponse::where('id','=',$accident_id)->first();
+            if(!$accident)
+            {
+                $request->session()->flash('error','Accident information not found');
+                return redirect()->back();
+            }
+            else
+            {
+                if($accident->delete())
+                {
+                    $request->session()->flash('success','The accident information has been successfully deleted');
+                    return redirect()->to(route('doctor.emergencies.accidents'));
+                }
+            }
+        }   
+    }
+    /************************** END EMERGENCIES *******************/
 }
 
