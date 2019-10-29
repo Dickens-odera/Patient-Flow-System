@@ -221,7 +221,7 @@ class NursesController extends Controller
                 $url = "http://localhost:8000/patients/doctor/bookings/approved";
                 $recipient_phone = Doctors::where('name','=',$doctor)->pluck('phone');
                 //dd($recipient_phone);
-                $message = "Dear ".$doctor.","."your appointment request to see Dr".$doctor." You have received a request from ".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
+                $message = "Dear ".$doctor." You have received a request from ".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),
