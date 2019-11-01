@@ -74,7 +74,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="{{ route('doctor.emergencies.accidents') }}"><i class="fa fa-circle-o"></i> Accidents</a></li>
-                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> Maternity</a></li>
+                <li><a href="{{ route('doctor.emergencies.maternity') }}"><i class="fa fa-circle-o"></i> Maternity</a></li>
                 <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> First Aid</a></li>
                 {{-- <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>
                 <li><a href="pages/UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li>

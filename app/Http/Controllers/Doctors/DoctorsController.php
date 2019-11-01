@@ -13,6 +13,7 @@ use App\Emergencies;
 use App\Accidents;
 use App\Maternity;
 use App\FirstAid;
+use App\NurseMatrenityResponse as MatResponse;
 use App\NurseAccidentResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -239,7 +240,7 @@ class DoctorsController extends Controller
     //ACCIDENTS
     public function listAllAccidentsFromNurse(request $request)
     {
-        $reported_accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->latest()->get();
+        $reported_accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(10);
         if(!$reported_accidents)
         {
             $request->session()->flash('error','No accident data found');
@@ -301,6 +302,44 @@ class DoctorsController extends Controller
                 }
             }
         }   
+    }
+    // MATERNITY
+    public function listAllMaternityEmergenciesFormNurse(Request $request)
+    {
+        //get a list of all the maternity responses from the nurse
+        $maternity_responses = MatResponse::where('status','=','initiated')->where('doctor','=',Auth::user()->name)->first();
+        if(!$maternity_responses)
+        {
+            $request->session()->flash('error','No reported maternity information from any nurse yet');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('doctor.emergencies.maternity.index', compact('maternity_responses'));
+        }
+    }
+    public function viewMaternityDetail(Request $request, $maternity_response_id = null)
+    {
+        $maternity_response_id = $request->id;
+        if(!$maternity_response_id)
+        {
+            $request->session()->flash('error','The maternity information not found');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request,['id'=>'required']);
+            $maternity_accident = MatResponse::where('id','=',$maternity_response_id)->where('status','initiated')->first();
+            if(!$maternity_accident)
+            {
+                $request->session()->flash('error','Maternity data not found');
+                return redirect()->back();
+            }
+            else
+            {
+                return view('doctor.emergencies.maternity.detail',compact('maternity_accident'));
+            }
+        }
     }
     /************************** END EMERGENCIES *******************/
 }
