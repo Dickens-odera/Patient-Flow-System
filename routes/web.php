@@ -85,7 +85,10 @@ Route::prefix('doctors')->group(function()
     Route::get('/emergencies/maternity','Doctors\DoctorsController@listAllMaternityEmergenciesFormNurse')->name('doctor.emergencies.maternity');
     Route::get('/emergencies/maternity-detail','Doctors\DoctorsController@viewMaternityDetail')->name('doctor.emergencies.maternity.detail');
     Route::get('/emergencies/maternity-delete','Doctors/DoctorsController@removeMaternityDetail')->name('doctor.emergencies.maternity.delete');
-
+    //First Aid
+    Route::get('/emergencies/first-aid','Doctors\DoctorsController@listAllFirstAidEmergenciesFormNurse')->name('doctor.emergencies.first-aid');
+    Route::get('/emergencies/first-aid-detail','Doctors\DoctorsController@viewFirstAidEmergencyDetail')->name('doctor.emergencies.firts-aid.detail');
+    Route::get('/emergencies/first-aid/delete','Doctors\DoctorsController@removeFirstAidEmergencyDetail')->name('doctor.emergencies.first-aid.delete');
 });
 //patients routes
 Route::prefix('patients')->group(function()

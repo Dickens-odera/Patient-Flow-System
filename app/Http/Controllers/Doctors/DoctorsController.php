@@ -13,6 +13,7 @@ use App\Emergencies;
 use App\Accidents;
 use App\Maternity;
 use App\FirstAid;
+use App\FirstAidNurseResponse as AidResponse;
 use App\NurseMatrenityResponse as MatResponse;
 use App\NurseAccidentResponse;
 use Illuminate\Support\Facades\Session;
@@ -353,6 +354,7 @@ class DoctorsController extends Controller
         }
         else
         {
+            $this->validate($request,['id'=>'required']);
             $maternity_detail = MatResponse::where('id','=',$maternity_detail_id)->first();
             if(!$maternity_detail)
             {
@@ -381,6 +383,36 @@ class DoctorsController extends Controller
                     }
                 }
             }
+        }
+    }
+    //First Aid
+    public function listAllFirstAidEmergenciesFormNurse(Request $request)
+    {
+        $first_aid_responses = AidResponse::where('doctor','=',Auth::user()->name)->where('status','=','initiated')->first();
+        if(!$first_aid_responses)
+        {
+            $request->session()->flash('error','No first aid emeregncies from tyeh nurse yet');
+            return redirect()->back();
+        }
+        else
+        {
+            return view('doctor.emergencies.firstaid.index',compact('first_aid_responses'));
+        }
+    }
+    //view the details of a single item
+    public function viewFirstAidEmergencyDetail(Request $request, $first_aid_response_id = null)
+    {
+        $first_aid_response_id = $request->id;
+        if(!$first_aid_response_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request,['id'=>'required']);
+            $first_aid_response = AidResponse::where('id','=',$first_aid_response_id)->where('doctor','=',Auth::user()->name)->first();
+            
         }
     }
     /************************** END EMERGENCIES *******************/
