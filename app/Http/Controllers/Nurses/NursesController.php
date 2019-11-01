@@ -174,7 +174,6 @@ class NursesController extends Controller
                 else
                 {
                     $patient = $accident->patient_name;
-                    $pat_id = $accident->id;
                     $patient_id = $accident->id;
                     if(!$patient)
                     {
@@ -189,9 +188,16 @@ class NursesController extends Controller
         }
     }
     //send the above response to the doctor
-    public function sendAccidentResponse(Request $request)
+    public function sendAccidentResponse(Request $request, $accident_id = null)
     {
+        $accident_id = $request->id;
+        if(!$accident_id)
+        {
+            $request->session()->flash('error','No accident information found');
+            return redirect()->back();
+        }
         $validator = Validator::make($request->all(),array(
+            'id'=>'required',
             'patient'=>'required',
             'doctor'=>'required',
             'comments'=>'required',
@@ -216,12 +222,13 @@ class NursesController extends Controller
             $response->damage_type = $request->damage_type;
             if($response->save())
             {
-                //Emergencies::where('patient_name','=',$request->patient)->where('id','=',$this->id)->update(['status'=>'complete']);
+                Emergencies::where('id','=',$accident_id)->first()->update(['status'=>'complete']);
                 //send sms to the doctor alerting them of the nurse response data
-                $url = "http://localhost:8000/patients/doctor/bookings/approved";
+                
+                $url = "http://localhost:8000/doctors/emergencies/accidents";
                 $recipient_phone = Doctors::where('name','=',$doctor)->pluck('phone');
                 //dd($recipient_phone);
-                $message = "Dear ".$doctor." You have received a request from ".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
+                $message = "Dear ".$doctor." You have received a request from nurse".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
                 $postData = array(
                     'username'=>env('USERNAME'),
                     'api_key'=>env('APIKEY'),

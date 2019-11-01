@@ -239,7 +239,7 @@ class DoctorsController extends Controller
     //ACCIDENTS
     public function listAllAccidentsFromNurse(request $request)
     {
-        $reported_accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->get();
+        $reported_accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->latest()->get();
         if(!$reported_accidents)
         {
             $request->session()->flash('error','No accident data found');
@@ -256,13 +256,13 @@ class DoctorsController extends Controller
         $accident_rep_id = $request->id;
         if(!$accident_rep_id)
         {
-            $request->session()->flash('error','Inavalid request format');
+            $request->session()->flash('error','Invalid request format');
             return redirect()->back();
         }
         else
         {
             $this->validate($request, ['id'=>'required']);
-            $accident = NurseAccidentResponse::where('id','=',$accident_rep_id)->where('doctor','=',Auth::user()->name)->get();
+            $accident = NurseAccidentResponse::where('id','=',$accident_rep_id)->where('doctor','=',Auth::user()->name)->first();
             if(!$accident)
             {
                 $request->session()->flash('error','No accident information found, try again');
