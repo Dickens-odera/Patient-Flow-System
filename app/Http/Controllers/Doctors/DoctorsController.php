@@ -341,6 +341,48 @@ class DoctorsController extends Controller
             }
         }
     }
+    //delete a single maternity detail
+    public function removeMaternityDetail(Request $request, $maternity_detail_id = null)
+    {
+        //get the maternity request by its id
+        $maternity_detail_id = $request->id;
+        if(!$maternity_detail_id)
+        {
+            $request->session()->flash('error','No macthing record found');
+            return redirect()->back();
+        }
+        else
+        {
+            $maternity_detail = MatResponse::where('id','=',$maternity_detail_id)->first();
+            if(!$maternity_detail)
+            {
+                $request->session()->flash('error','Record not found');
+                return redirect()->back();
+            }
+            else
+            {
+                $status = $maternity_detail->status;
+                if($status === 'initiated')
+                {
+                    $request->session()->flash('error','You cannot delete a record that has is still pending completion');
+                    return redirect()->back();
+                }
+                else
+                {
+                    if($maternity_detail->delete())
+                    {
+                        $request->session()->flash('success','Maternity record number '.$maternity_detail->id." deleted sucessfully");
+                        return redirect()->back();
+                    }
+                    else
+                    {
+                        $request->session()->flash('error','maternity detail could not be deleted, try again');
+                        return redirect()->back();
+                    }
+                }
+            }
+        }
+    }
     /************************** END EMERGENCIES *******************/
 }
 

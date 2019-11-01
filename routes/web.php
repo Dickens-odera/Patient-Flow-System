@@ -83,7 +83,8 @@ Route::prefix('doctors')->group(function()
     Route::get('/emergencies/accident/delete','Doctors\DoctorsController@removeAccidentDetail')->name('doctor.emergencies.accident.delete');
     //maternity
     Route::get('/emergencies/maternity','Doctors\DoctorsController@listAllMaternityEmergenciesFormNurse')->name('doctor.emergencies.maternity');
-    Route::get('/emergencies/maernity-detail','Doctors\DoctorsController@viewMaternityDetail')->name('doctor.emergencies.maternity.detail');
+    Route::get('/emergencies/maternity-detail','Doctors\DoctorsController@viewMaternityDetail')->name('doctor.emergencies.maternity.detail');
+    Route::get('/emergencies/maternity-delete','Doctors/DoctorsController@removeMaternityDetail')->name('doctor.emergencies.maternity.delete');
 
 });
 //patients routes
