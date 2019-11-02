@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Patients;
 use App\Bookings;
 use App\Doctors;
+use App\Staff as Pharmacist;
 use Image;
 use Auth;
+use DB;
 use App\Emergencies;
 use App\Accidents;
 use App\Maternity;
@@ -22,14 +24,31 @@ use Illuminate\Support\Facades\Redirect;
 class DoctorsController extends Controller
 {
     //the authentiaction guard
+    //private $stmt = "";
     public function __construct()
     {
         $this->middleware('auth:doctor');
+        //$this->stmt = $stmt;
     }
     public function index()
     {
         //show the dashboard
-        return view('doctor.dashboard');
+        //here use DB instead of Eloquent ORM to access the database data from the db
+        //emergencies
+        $doctor = Auth::user()->name;
+        $accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->get();
+        $doc = Doctors::where('id','=',Auth::user()->id)->where('name','=',Auth::user()->name)->first();
+        //dd($doc->name);
+        //$stmt += "SELECT * FROM nurse_accident_response";
+        //$stmt += "WHERE doctor = ".$doc->name;
+        //$stmt += "ORDER BY id DESC LIMIT 10";
+        //$accidents = DB::select(DB::raw($stmt));
+        $maternity = MatResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(5);
+        $first_aid_res_data = AidResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(5);
+        //patient bookings
+        $bookings = Bookings::where('doctor','=',Auth::user()->name)->latest()->paginate(5); //general
+        $approved_bookings = Bookings::where('doctor','=',Auth::user()->name)->latest()->paginate(5); //approved bookings
+        return view('doctor.dashboard', compact('accidents ','maternity','first_aid_res_data','bookings','approved_bookings'));
     }
     //show the doctor their profile
     public function profile(Request $request, $doctor_id = null)
@@ -272,7 +291,9 @@ class DoctorsController extends Controller
             }
             else
             {
-                return view('doctor.emergencies.accidents.detail',compact('accident'));
+                $pharmacists = Pharmacist::latest()->get();
+                //dd($pharmacists);
+                return view('doctor.emergencies.accidents.detail',compact('accident','pharmacists'));
             }
         }   
     }
@@ -412,7 +433,67 @@ class DoctorsController extends Controller
         {
             $this->validate($request,['id'=>'required']);
             $first_aid_response = AidResponse::where('id','=',$first_aid_response_id)->where('doctor','=',Auth::user()->name)->first();
-            
+            if(!$first_aid_response)
+            {
+                $request->session()->flash('error','No matching first aid information found');
+                return redirect()->back();
+            }
+            else
+            {
+                return view('doctor.emergencies.firstaid.index', compact('first_aid_response'));
+            }
+        }   
+    }
+    //delete the details of a single first aid information
+    public function removeFirstAidEmergencyDetail(Request $request, $first_aid_response_id = null)
+    {
+        //get the first aid information by its id
+        $first_aid_response_id = $request->id;
+        if(!$first_aid_response_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $validator = Validator::make($request->all(),['id'=>'required']);
+            if($validator->fails())
+            {
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
+            }
+            else
+            {
+                $response_data = AidResponse::where('id','=',$first_aid_response_id)->where('doctor','=',Auth::user()->name)->first();
+                if(!$response_data)
+                {
+                    $request->session()->flash('error','Matching first aid record not found');
+                    return redirect()->back();
+                }
+                else
+                {
+                    //check the status of the first aid data to be deleted ans restrict deletion of initiated data
+                    $status = $response_data->status;
+                    if($status === 'initiated')
+                    {
+                        $request->session()->flash('error','Prohibited action, you cannot delete an incomplete request');
+                        return redirect()->back();
+                    }
+                    else
+                    {
+                        if($response_data->delete())
+                        {
+                            $request->session()->flash('success','First Aid Data with Ref No: '.$response_data->id." has been successsfully deleted");
+                            return redirect()->back();
+                        }
+                        else
+                        {
+                            $request->session()->flash('error','Failed to perform requested action, try again');
+                            return redirect()->back();
+                        }
+                    }
+                }
+            }
         }
     }
     /************************** END EMERGENCIES *******************/

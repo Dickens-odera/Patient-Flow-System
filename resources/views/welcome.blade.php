@@ -149,7 +149,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card card-primary">
-                            <div class="card-header text-uppercase text-white bg-info">{{ __('Hospital Staff') }}
+                            <div class="card-header text-uppercase text-white bg-info">{{ __('Pharmacist') }}
                                     <i class="fa fa-user pull-right" style="font-size:50px"></i>
                             </div>
                             <div class="card-body">

@@ -58,12 +58,44 @@
                            No <input type="radio" value="no" name="seen_patient" id="no">
                         </div>
                     </div>
-                    <div id="doctor-response-form" style="display:none">
+                    <div id="doctor-response-form" style="">
                         <div class="form-group row">
                             <label for="date" class="form-label col-md-4 text-md-right">{{ __('Date') }}</label>
                             <div class="col-md-8">
                                 <input type="date" class="form-control" value="{{ old('date') }}" name="date">
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="pharmacist" class="col-md-4 form-label text-md-right">{{ __('Pharmacist') }}</label>
+                            <div class="col-md-8">
+                                <select name="pharmacists" id="pharmacists" class="form-control">
+                                    <option value="">Select...</option>
+                                    @if(count($pharmacists) > 0)
+                                        @foreach($pharmacists as $key=>$value)
+                                            <option value="{{ $value->name }}">{{ $value->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="prescription" class="form-label col-md-4 text-md-right">{{ __('Prescription') }}</label>
+                            <div class="col-md-8">
+                                <input type="text" name="prescription" class="form-control" value="{{ old('prescription') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="comments" class="form-label text-md-right col-md-4">{{ __('Comments') }}</label>
+                            <div class="col-md-8">
+                                <textarea name="comments" id="comments" cols="30" rows="10" class="form-control">
+                                    {{ old('comments') }}
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            <button class="btn btn-sm btn-success" type="submit">
+                                <i class="fa fa-send"></i> {{ __('Send Examination to Pharmacist') }}
+                            </button>
                         </div>
                     </div>
                 </form>

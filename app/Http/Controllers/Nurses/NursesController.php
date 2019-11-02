@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Nurses;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
+use DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,7 @@ use App\Doctors;
 use App\Nurse;
 use App\Departments;
 use App\Patients;
+use App\NurseMatrenityResponse as MatResponse;
 use App\NurseAccidentResponse as ResponseState;
 class NursesController extends Controller
 {
@@ -27,7 +29,10 @@ class NursesController extends Controller
     public function index()
     {
         //show the dashboard
-        return view('nurses.dashboard');
+        $accidents = DB::select(DB::raw("SELECT * FROM accidents ORDER BY id DESC LIMIT 10"));
+        $maternity = DB::select(DB::raw("SELECT * FROM maternity_request ORDER BY id +0 DESC LIMIT 10"));
+        $first_aid_requests = DB::select(DB::raw("SELECT * FROM first_aid_requests ORDER BY id +0 DESC LIMIT 10"));
+        return view('nurses.dashboard', compact(['accidents','maternity','first_aid_requests']));
     }
     /********************** Emergencies ************************************/
     //view all accidents 
@@ -98,7 +103,7 @@ class NursesController extends Controller
             $maternity_detail = Emergencies::where('id','=',$maternity_id)->first();
             if(!$maternity_detail)
             {
-                $request->session()->flash('error','Unbale to find the requested maternity detail');
+                $request->session()->flash('error','Unable to find the requested maternity detail');
                 return redirect()->back();
             }
             else
@@ -146,6 +151,7 @@ class NursesController extends Controller
         }
     }
     /********************************* Emergency Responses ***********************/
+    //accident responses
     public function emergencyAccidentResponse(Request $request,$accident_id = null)
     {
         $accident_id = $request->id;
@@ -255,6 +261,140 @@ class NursesController extends Controller
                         curl_close($ch);
                 $request->session()->flash('success','Accident successfully reported to Doctor '.$request->doctor);
                 return redirect()->to(route('nurse.emergencies.accidents.all'));
+            }
+        }
+    }
+    //maternity responses
+    public function emergencyMaternityResponse(Request $request, $maternity_res_id = null)
+    {
+        $maternity_res_id = $request->id;
+        if(!$maternity_res_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $this->validate($request,['id'=>'required']);
+            $maternity_res = Emergencies::where('id','=',$maternity_res_id)->where('type','=','maternity')->first();
+            $status = $maternity_res->status;
+            if($status === "complete")
+            {
+                $request->session()->flash('error','This recoed has already been responded to');
+                return redirect()->back();
+            }
+            if(!$maternity_res)
+            {
+                $request->session()->flash('error','Matching maternity informtion not found');
+                return redirect()->back();
+            }
+            else
+            {
+                $patient = $maternity_res->patient_name;
+                $patient_id = $maternity_res->id;
+                //dd($patient);
+                if(!$patient)
+                {
+                    $request->session()->flash('error','Patient Not Found');
+                    return redirect()->back();
+                }
+                else
+                {
+                    $doctors = Doctors::latest()->get();
+                    //dd($doctors);
+                    if(!$doctors)
+                    {
+                        $request->session()->flash('error','No doctors found');
+                        return redirect()->back();
+                    }
+                    else
+                    {
+                        return view('nurses.emergencies.maternity.response',compact('doctors','patient','patient_id'));
+                    }
+                }
+            }
+        }
+    }
+    //send the maternity response data to the Dr.
+    public function sendMaternityResponseToDr(Request $request, $maternity_res_id = null)
+    {
+        $maternity_res_id = $request->id;
+        if(!$maternity_res_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+            return redirect()->back();
+        }
+        else
+        {
+            $validator = Validator::make($request->all(),array(
+                'id'=>'required',
+                'patient'=>'required',
+                'doctor'=>'required',
+                'comments'=>'nullable'
+            ));
+            if($validator->fails())
+            {
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
+            }
+            else
+            {
+                $maternity_data_status = Emergencies::where('id','=',$maternity_res_id)->where('type','=','maternity')->first();
+                $status = $maternity_data_status->status;
+                //dd($status);
+                if($status == 'complete')
+                {
+                    $request->session()->flash('error','This particular record has already been reported');
+                    return redirect()->back();
+                }
+                $mat_res =  new MatResponse;
+                $mat_res->patient = $request->patient;
+                $nurse = Nurse::where('name','=',Auth::user()->name)->first();
+                $doctor = $request->doctor;
+                $mat_res->nurse = $nurse->name;
+                $mat_res->doctor = $request->doctor;
+                $mat_res->status = 'initiated';
+                $mat_res->comments = $request->comments;
+                if($mat_res->save())
+                {
+                    Emergencies::where('id','=',$maternity_res_id)->first()->update(['status'=>'complete']);
+                    //send sms to the Doctor
+                    $url = "http://localhost:8000/doctors/emergencies/maternity";
+                    $recipient_phone = Doctors::where('name','=',$doctor)->pluck('phone');
+                    //dd($recipient_phone);
+                    $message = "Dear ".$doctor." You have received a request from nurse ".$nurse->name." to attend to the patient ".$request->patient." Kindly click ".$url." to check the emmergency state";
+                    $postData = array(
+                        'username'=>env('USERNAME'),
+                        'api_key'=>env('APIKEY'),
+                        'sender'=>env('SENDERID'),
+                        'to'=>$recipient_phone,
+                        'message'=>$message,
+                        'msgtype'=>env('MSGTYPE'),
+                        'dlr'=>env('DLR')
+                    );
+                        $ch = curl_init();
+                        curl_setopt_array($ch, array(
+                                CURLOPT_URL => env('URL'),
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_POST => true,
+                                CURLOPT_POSTFIELDS => $postData
+                            ));
+                        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
+                        $output = curl_exec($ch);
+                        if(curl_errno($ch))
+                            {
+                                $output = curl_error($ch);
+                            }
+                            curl_close($ch);
+                    $request->session()->flash('success','Maternity response successfully sent to Dr '.$request->doctor);
+                    return redirect()->to(route('nurse.emergencies.maternity.response'));
+                }
+                else
+                {
+                    $request->session()->flash('error','Failed to send the maternity response to Dr '.$request->doctor.", try again");
+                    return redirect()->back();
+                }
             }
         }
     }

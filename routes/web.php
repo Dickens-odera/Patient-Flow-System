@@ -1,22 +1,4 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/', function () {
-    return view('welcome');
-});
-Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
-
 //admin routes
 Route::prefix('admin')->group(function()
 {   
@@ -76,7 +58,7 @@ Route::prefix('doctors')->group(function()
     Route::post('/patient/booking/approval','Doctors\DoctorsController@approveAppointmentBooking')->name('doctor.patient.booking.approve');
     Route::get('/patient/bookings/approved','Doctors\DoctorsController@showAllApprovedBookings')->name('doctor.patient.bookings.approved.all');
 
-    //emergencies
+    /************************ emergencies ************************************/
     //accidents
     Route::get('/emergencies/accidents','Doctors\DoctorsController@listAllAccidentsFromNurse')->name('doctor.emergencies.accidents');
     Route::get('/emergencies/accident','Doctors\DoctorsController@viewAccidentDetail')->name('doctor.emergencies.accident.detail');
@@ -113,16 +95,20 @@ Route::prefix('nurses')->group(function()
     Route::post('/nurseslogin','Auth\NursesLoginController@login')->name('nurse.login.submit');
     Route::get('/logout','Auth\NursesLoginController@logout')->name('nurse.logout');
     Route::get('/dashboard','Nurses\NursesController@index')->name('nurse.dashboard');
-    //emergncies
+    //emergencies
     Route::get('/emergencies/reported-accidents','Nurses\NursesController@viewAllReportedAccidents')->name('nurse.emergencies.accidents.all');
     Route::get('/emergencies/reported-accidents-detail','Nurses\NursesController@emergencyAccidentDetails')->name('nurse.emergency.accident.detail');
     Route::get('/emergencies/reported-maternity','Nurses\NursesController@viewAllReportedMaternity')->name('nurse.emergencies.maternity.all');
     Route::get('/emergencies/reported-maternity-detail','Nurses\NursesController@emergencyMaternityDetail')->name('nurse.emergencies.maternity.detail');
     Route::get('/emergencies/reported-first-aid-requests','Nurses\NursesController@viewAllReportedfirstAid')->name('nurse.emergencies.first_aid.all');
     Route::get('/emergencies/reported-first-aid-request-details','Nurses\NursesController@emergencyFirstAidDetail')->name('nurse.emergencies.first_aid.detail');
-    //emergency response
+    /**************** emergency response **********************/
+    //accident responses
     Route::get('/emergencies/reported-accident/response','Nurses\NursesController@emergencyAccidentResponse')->name('nurse.emergencies.accident.response');
     Route::post('/emergencies/reported-accident/response','Nurses\NursesController@sendAccidentResponse')->name('nurse.emergencies.accident.response.post');
+    //maternity responses
+    Route::get('/emergencies/reported-maternity/response','Nurses\NursesController@emergencyMaternityResponse')->name('nurse.emergencies.maternity.response');
+    Route::post('/emergencies/reported-maternity/response','Nurses\NursesController@sendMaternityResponseToDr')->name('nurse.emergencies.maternity.response.post');
 });
 //staff routes
 Route::prefix('staff')->group(function()
@@ -140,3 +126,9 @@ Route::post('/patient-emergency-request','HospitalServices\PatientServivesContro
 Route::get('/patient/create-new-account','HospitalServices\PatientServivesController@showPatientRegistrationForm')->name('patient.register');
 Route::post('/patient/create-new-account','HospitalServices\PatientServivesController@registerPatient')->name('patient.register.submit');
 Route::get('/patient/nurse-request','HospitalServices\PatientServivesController@showPatientNurseRequestForm')->name('patient.nurse.request.form');
+
+Route::get('/', function () {
+    return view('welcome');
+});
+Auth::routes();
+Route::get('/home', 'HomeController@index')->name('home');
