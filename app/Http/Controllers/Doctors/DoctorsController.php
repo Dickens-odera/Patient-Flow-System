@@ -36,13 +36,10 @@ class DoctorsController extends Controller
         //here use DB instead of Eloquent ORM to access the database data from the db
         //emergencies
         $doctor = Auth::user()->name;
-        $accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->get();
+        //$accidents = NurseAccidentResponse::where('doctor','=',Auth::user()->name)->get();
         $doc = Doctors::where('id','=',Auth::user()->id)->where('name','=',Auth::user()->name)->first();
-        //dd($doc->name);
-        //$stmt += "SELECT * FROM nurse_accident_response";
-        //$stmt += "WHERE doctor = ".$doc->name;
-        //$stmt += "ORDER BY id DESC LIMIT 10";
-        //$accidents = DB::select(DB::raw($stmt));
+        //dd($doc);
+        $accidents = DB::select('SELECT * FROM nurse_accident_response where doctor = :doctor',['doctor'=>Auth::user()->name]);
         $maternity = MatResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(5);
         $first_aid_res_data = AidResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(5);
         //patient bookings

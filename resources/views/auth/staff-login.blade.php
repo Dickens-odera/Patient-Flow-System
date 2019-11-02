@@ -34,7 +34,7 @@
                 <form class="login100-form validate-form" method="post" action="{{ route('staff.login.submit') }}">
                     {{ csrf_field() }}
 					<span class="login100-form-title">
-						{{ __('STAFF LOGIN') }}
+						{{ __('PHARMACIST LOGIN') }}
 					</span>
 
 					<div class="wrap-input100 validate-input $errors->has('email')? 'has-error':''">
