@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Patients;
 use App\Bookings;
 use App\Doctors;
+use App\Staff;
 use App\Staff as Pharmacist;
 use Image;
 use Auth;
@@ -15,6 +16,7 @@ use App\Emergencies;
 use App\Accidents;
 use App\Maternity;
 use App\FirstAid;
+use App\DoctorAccidentResponse as DrAccResponse;
 use App\FirstAidNurseResponse as AidResponse;
 use App\NurseMatrenityResponse as MatResponse;
 use App\NurseAccidentResponse;
@@ -326,7 +328,7 @@ class DoctorsController extends Controller
     public function listAllMaternityEmergenciesFormNurse(Request $request)
     {
         //get a list of all the maternity responses from the nurse
-        $maternity_responses = MatResponse::where('status','=','initiated')->where('doctor','=',Auth::user()->name)->first();
+        $maternity_responses = MatResponse::where('doctor','=',Auth::user()->name)->latest()->paginate(10);
         if(!$maternity_responses)
         {
             $request->session()->flash('error','No reported maternity information from any nurse yet');
@@ -348,15 +350,16 @@ class DoctorsController extends Controller
         else
         {
             $this->validate($request,['id'=>'required']);
-            $maternity_accident = MatResponse::where('id','=',$maternity_response_id)->where('status','initiated')->first();
-            if(!$maternity_accident)
+            $maternity_response = MatResponse::where('id','=',$maternity_response_id)->where('status','initiated')->first();
+            if(!$maternity_response)
             {
                 $request->session()->flash('error','Maternity data not found');
                 return redirect()->back();
             }
             else
             {
-                return view('doctor.emergencies.maternity.detail',compact('maternity_accident'));
+                $pharmacists = Staff::latest()->get();
+                return view('doctor.emergencies.maternity.detail',compact('maternity_response','pharmacists'));
             }
         }
     }
@@ -489,6 +492,87 @@ class DoctorsController extends Controller
                             return redirect()->back();
                         }
                     }
+                }
+            }
+        }
+    }
+    /********************************** EMERGENCY RESPONSES **********************/
+    //ACCIDENT RESPONSE
+    public function respondToAccidentEmergency(Request $request, $accident_id = null)
+    {
+        $accident_id = $request->id;
+        if(!$accident_id)
+        {
+            $request->session()->flash('error','Invalid request format');
+        }
+        else
+        {
+            $validator = Validator::make($request->all(),array(
+                'id'=>'required',
+                'date'=>'date|required',
+                'prescription'=>'required',
+                'comments'=>'nullable',
+                'admit'=>'required'
+            ));
+            if($validator->fails())
+            {
+                $request->session()->flash('error',$validator->errors());
+                return redirect()->back();
+            }
+            else
+            {
+                $accident_item = NurseAccidentResponse::where('id','=',$accident_id)->first();
+                $accident_patient = $accident_item->patient;
+                //dd($accident_patient);
+                $doctor_accident_res = new DrAccResponse;
+                $doctor_accident_res->date = $request->date;
+                $doctor_accident_res->pharmacist = $request->pharmacist;
+                $doctor_accident_res->patient = $accident_patient;
+                $doctor_accident_res->status = 'incomplete';
+                $doctor_accident_res->comments = $request->comments;
+                $doctor_accident_res->prescription = $request->prescription;
+                $doctor_accident_res->admit = $request->admit;
+                if($doctor_accident_res->save())
+                {
+                    //set status to complete
+                    NurseAccidentResponse::where('id','=',$accident_id)->first()->update(['status'=>'complete']);
+                    //send sms to the pharmacist;
+                    $pharmacist = $request->pharmacist;
+                    $phone = Staff::where('name','=',$pharmacist)->first()->pluck('phone');
+                    //dd($phone);
+                    $url = '';
+                    $message = "Dear Pharmacist ".$pharmacist.", You are requested by Dr ".Auth::user()->name." to issue ".$request->prescription." to the patient ".$accident_patient." click ".$url." for more info";
+                    $postData = array(
+                        'username'=>env('USERNAME'),
+                        'api_key'=>env('APIKEY'),
+                        'sender'=>env('SENDERID'),
+                        'to'=>$phone,
+                        'message'=>$message,
+                        'msgtype'=>env('MSGTYPE'),
+                        'dlr'=>env('DLR')
+                    );
+                        $ch = curl_init();
+                        curl_setopt_array($ch, array(
+                                CURLOPT_URL => env('URL'),
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_POST => true,
+                                CURLOPT_POSTFIELDS => $postData
+                            ));
+                        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
+                        $output = curl_exec($ch);
+                        if(curl_errno($ch))
+                            {
+                                $output = curl_error($ch);
+                            }
+                            curl_close($ch);
+                    $request->session()->flash('success','Response successfull on accident No '.$accident_id);
+                    return redirect()->to(route('doctor.emergencies.accidents'));
+                }
+                else
+                {
+                    $request->session()->flash('error','Unable to send response. Try again');
+                    return redirect()->back();
                 }
             }
         }

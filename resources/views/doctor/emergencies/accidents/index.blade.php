@@ -19,6 +19,7 @@
                             <th>Accident Type</th>
                             <th>Damage Type</th>
                             <th>Date Reported</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                         @if(count($reported_accidents) > 0)
@@ -30,6 +31,11 @@
                                     <td>{{ $value->accident_type }}</td>
                                     <td>{{ $value->damage_type }}</td>
                                     <td>{{ $value->updated_at }}</td>
+                                        @if($value->status === 'complete')
+                                       <td style="color:red">{{ $value->status }}</td> 
+                                       @else
+                                       <td style="color:green">{{ $value->status }}</td>
+                                       @endif
                                     <td class="btn-group btn-group-sm">
                                         <a href="{{ route('doctor.emergencies.accident.detail', ['id'=>$value->id,'patient'=>$value->patient]) }}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> {{ __('View More') }}</a>
                                         <a href="{{ route('doctor.emergencies.accident.delete',['id'=>$value->id])}}" class="btn btn-sm btn-danger" onclick="if(!confirm('Are you sure you want to delete this particular record?')){return false}"><i class="fa fa-trash"></i> {{ __('Delete') }}</a>

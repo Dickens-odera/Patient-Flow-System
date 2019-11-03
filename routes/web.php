@@ -71,6 +71,10 @@ Route::prefix('doctors')->group(function()
     Route::get('/emergencies/first-aid','Doctors\DoctorsController@listAllFirstAidEmergenciesFormNurse')->name('doctor.emergencies.first-aid');
     Route::get('/emergencies/first-aid-detail','Doctors\DoctorsController@viewFirstAidEmergencyDetail')->name('doctor.emergencies.firts-aid.detail');
     Route::get('/emergencies/first-aid/delete','Doctors\DoctorsController@removeFirstAidEmergencyDetail')->name('doctor.emergencies.first-aid.delete');
+
+    /************************** Emergency Responsesc  ***********************/
+    //Accidents
+    Route::post('/emeregencies/accidents/response','Doctors\DoctorsController@respondToAccidentEmergency')->name('doctor.emergencies.accident.response.post');
 });
 //patients routes
 Route::prefix('patients')->group(function()

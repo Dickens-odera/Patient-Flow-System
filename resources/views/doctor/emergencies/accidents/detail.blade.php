@@ -4,7 +4,6 @@
     <div class="col-md-6 mb-2">
         <div class="box">
             <div class="box-header bg-info text-uppercase text-white">{{ __('reported accident emergency details on') }} <span class="text-success" style="font-weight:bold; font-size:18px; font-family:cursive">{{ $accident->patient }}</span></div>
-            @include('includes.errors.custom')
             <div class="box-body">
                <form action="" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
@@ -38,6 +37,14 @@
                             <input type="text" class="form-control" disabled value="{{ $accident->updated_at}}">
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="comments" class="col-md-4 form-label text-md-right">{{ __('Description') }}</label>
+                        <div class="col-md-8">
+                            <textarea name="comments" id="" cols="30" rows="10" class="form-control" disabled>
+                                {{ $accident->comments }}
+                            </textarea>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="box-footer">
@@ -46,19 +53,20 @@
         </div>
     </div>
     <div class="col-md-6">
+            @include('includes.errors.custom')
         <div class="box">
             <div class="box-header bg-info text-uppercase text-white">{{ __('Patient Examination Section') }}</div>
             <div class="box-body">
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('doctor.emergencies.accident.response.post',['id'=>$accident->id]) }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
                         <label for="name" class="col-md-4 text-md-right form-label">Have you seen the patient?</label>
                         <div class="col-md-8">
-                           Yes <input type="radio" value="yes" name="seen_patient" id="yes">
-                           No <input type="radio" value="no" name="seen_patient" id="no">
+                           Yes <input type="checkbox" value="yes" name="seen_patient" id="yes">
+                           {{-- No <input type="radio" value="no" name="seen_patient" id="no"> --}}
                         </div>
                     </div>
-                    <div id="doctor-response-form" style="">
+                    <div id="doctor-response-form" style="display:none">
                         <div class="form-group row">
                             <label for="date" class="form-label col-md-4 text-md-right">{{ __('Date') }}</label>
                             <div class="col-md-8">
@@ -68,7 +76,7 @@
                         <div class="form-group row">
                             <label for="pharmacist" class="col-md-4 form-label text-md-right">{{ __('Pharmacist') }}</label>
                             <div class="col-md-8">
-                                <select name="pharmacists" id="pharmacists" class="form-control">
+                                <select name="pharmacist" id="pharmacists" class="form-control">
                                     <option value="">Select...</option>
                                     @if(count($pharmacists) > 0)
                                         @foreach($pharmacists as $key=>$value)
@@ -82,6 +90,13 @@
                             <label for="prescription" class="form-label col-md-4 text-md-right">{{ __('Prescription') }}</label>
                             <div class="col-md-8">
                                 <input type="text" name="prescription" class="form-control" value="{{ old('prescription') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="admit" class="form-label col-md-4 text-md-right">{{ __('Admit Patient?') }}</label>
+                            <div class="col-md-8">
+                                Yes <input type="radio" name="admit" value="yes">
+                                No <input type="radio" name="admit" value="no">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -105,17 +120,21 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-      $(function () {
+    <script>
+        $(function () {
             $("#yes").click(function () {
                 if ($(this).is(":checked")) {
                     $("#doctor-response-form").show();
-                    //$('#profileupdateform').hide();
+                    //$('#yes').hide();
                 } else {
                     $("#doctor-response-form").hide();
-                    //$('#profileupdateform').show();
+                    //$('#yes').show();
                 }
             });
             });
-    </script>
+</script>
 @endsection
+<script
+src="https://code.jquery.com/jquery-3.4.1.min.js"
+integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+crossorigin="anonymous"></script>

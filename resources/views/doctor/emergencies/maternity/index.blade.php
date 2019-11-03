@@ -39,7 +39,7 @@
                         @endif
                     </thead>
                 </table>
-                {{ $reported_accidents->links() }}
+                {{ $maternity_responses->links() }}
             </div>
             <div class="box-footer">
                 <!-- Some footer content here -->
