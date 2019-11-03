@@ -121,6 +121,9 @@ Route::prefix('staff')->group(function()
     Route::post('/stafflogin','Auth\StaffLoginController@login')->name('staff.login.submit');
     Route::get('/logout','Auth\StaffLoginController@logout')->name('staff.logout');
     Route::get('/dashboard','Staff\StaffController@index')->name('staff.dashboard');
+    Route::get('/patients/transactions','Staff\StaffController@listAllPatientTransactions')->name('pharmacists.patient.transactions.all');
+    Route::get('/patients/transactions/details','Staff\StaffController@ViewPatientTransactionDetail')->name('pharmacists.patient.transactions.detail');
+    Route::post('/patients/transactions/details','Staff\StaffController@chargePatient')->name('pharmacists.patient.transactions.charge');
 });
 
 //general welcome page functionalities

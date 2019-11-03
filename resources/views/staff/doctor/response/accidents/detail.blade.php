@@ -1,47 +1,47 @@
-@extends('doctor.main')
-@include('doctor.header')
+@extends('staff.main')
+@include('staff.header')
 @section('content')
     <div class="col-md-6 mb-2">
         <div class="box">
-            <div class="box-header bg-info text-uppercase text-white">{{ __('reported accident emergency details on') }} <span class="text-success" style="font-weight:bold; font-size:18px; font-family:cursive">{{ $accident->patient }}</span></div>
+            <div class="box-header bg-info text-uppercase text-white">{{ __('reported res emergency details on') }} <span class="text-success" style="font-weight:bold; font-size:18px; font-family:cursive">{{ $res->patient }}</span></div>
             <div class="box-body">
                <form action="" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group row">
                         <label for="patient_name" class="col-md-4 form-label text-md-right">{{ __('Patient Name') }}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="patient_name" disabled value="{{ $accident->patient }}">
+                            <input type="text" class="form-control" name="patient_name" disabled value="{{ $res->patient }}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="nurse" class="col-md-4 form-label text-md-right">{{ __('Reported by Nurse') }}</label>
+                        <label for="nurse" class="col-md-4 form-label text-md-right">{{ __('Prescription') }}</label>
                         <div class="col-md-8">
-                            <input type="nurse" class="form-control" disabled value="{{ $accident->nurse }}">
+                            <input type="nurse" class="form-control" disabled value="{{ $res->prescription }}">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="accident_type" class="col-md-4 form-label text-md-right">{{ __('Accident Type') }}</label>
+                    {{-- <div class="form-group row">
+                        <label for="res_type" class="col-md-4 form-label text-md-right">{{ __('res Type') }}</label>
                         <div class="col-md-8">
-                            <input type="accident_type" class="form-control" disabled value="{{ $accident->accident_type }}">
+                            <input type="res_type" class="form-control" disabled value="{{ $res->res_type }}">
                         </div>
-                    </div>
-                    <div class="form-group row">
+                    </div> --}}
+                    {{-- <div class="form-group row">
                         <label for="" class="form-label col-md-4 text-md-right">{{ __('Damage Type') }}</label>
                         <div class="col-md-8">
-                            <input type="damage_type" class="form-control" disabled value="{{ $accident->damage_type }}">
+                            <input type="damage_type" class="form-control" disabled value="{{ $res->damage_type }}">
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="form-group row">
                         <label for="date" class="col-md-4 form-label text-md-right">{{ __('Date Reported') }}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" disabled value="{{ $accident->updated_at}}">
+                            <input type="text" class="form-control" disabled value="{{ $res->updated_at}}">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="comments" class="col-md-4 form-label text-md-right">{{ __('Description') }}</label>
                         <div class="col-md-8">
                             <textarea name="comments" id="" cols="30" rows="10" class="form-control" disabled>
-                                {{ $accident->comments }}
+                                {{ $res->comments }}
                             </textarea>
                         </div>
                     </div>
@@ -55,19 +55,12 @@
     <div class="col-md-6">
             @include('includes.errors.custom')
         <div class="box">
-            <div class="box-header bg-info text-uppercase text-white">{{ __('Patient Examination Section') }}</div>
+            <div class="box-header bg-info text-uppercase text-white">{{ __('Prescription Cost') }}</div>
             <div class="box-body">
-                @if($accident->status === 'incomplete')
-                <form action="{{ route('doctor.emergencies.accident.response.post',['id'=>$accident->id]) }}" method="POST" enctype="multipart/form-data">
+                @if($res->status === 'incomplete')
+                <form action="{{ route('pharmacists.patient.transactions.charge',['id'=>$res->id]) }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    <div class="form-group row">
-                        <label for="name" class="col-md-4 text-md-right form-label">Have you seen the patient?</label>
-                        <div class="col-md-8">
-                           Yes <input type="checkbox" value="yes" name="seen_patient" id="yes">
-                           {{-- No <input type="radio" value="no" name="seen_patient" id="no"> --}}
-                        </div>
-                    </div>
-                    <div id="doctor-response-form" style="display:none">
+                    <div id="doctor-response-form" style="">
                         <div class="form-group row">
                             <label for="date" class="form-label col-md-4 text-md-right">{{ __('Date') }}</label>
                             <div class="col-md-8">
@@ -75,29 +68,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="pharmacist" class="col-md-4 form-label text-md-right">{{ __('Pharmacist') }}</label>
+                            <label for="amount" class="form-label col-md-4 text-md-right">{{ __('Cost') }}</label>
                             <div class="col-md-8">
-                                <select name="pharmacist" id="pharmacists" class="form-control">
-                                    <option value="">Select...</option>
-                                    @if(count($pharmacists) > 0)
-                                        @foreach($pharmacists as $key=>$value)
-                                            <option value="{{ $value->name }}">{{ $value->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="prescription" class="form-label col-md-4 text-md-right">{{ __('Prescription') }}</label>
-                            <div class="col-md-8">
-                                <input type="text" name="prescription" class="form-control" value="{{ old('prescription') }}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="admit" class="form-label col-md-4 text-md-right">{{ __('Admit Patient?') }}</label>
-                            <div class="col-md-8">
-                                Yes <input type="radio" name="admit" value="yes">
-                                No <input type="radio" name="admit" value="no">
+                                <input type="number" name="amount" class="form-control" value="{{ old('cost') }}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -110,7 +83,7 @@
                         </div>
                         <div class="col-md-8 col-md-offset-4">
                             <button class="btn btn-sm btn-success" type="submit">
-                                <i class="fa fa-send"></i> {{ __('Send Examination to Pharmacist') }}
+                                <i class="fa fa-send"></i> {{ __('Send Charges to patient') }}
                             </button>
                         </div>
                     </div>

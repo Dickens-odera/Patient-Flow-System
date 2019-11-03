@@ -1,5 +1,4 @@
-
-  <header class="main-header">
+<header class="main-header">
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -26,7 +25,7 @@
               <li class="header">You have 4 messages</li>
               <li>
                 <!-- inner menu: contains the actual data -->
-                <ul class="menu">
+                {{-- <ul class="menu">
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
@@ -88,7 +87,7 @@
                       <p>Why not buy a new awesome theme?</p>
                     </a>
                   </li>
-                </ul>
+                </ul> --}}
               </li>
               <li class="footer"><a href="#">See All Messages</a></li>
             </ul>
@@ -103,7 +102,7 @@
               <li class="header">You have 10 notifications</li>
               <li>
                 <!-- inner menu: contains the actual data -->
-                <ul class="menu">
+                {{-- <ul class="menu">
                   <li>
                     <a href="#">
                       <i class="fa fa-users text-aqua"></i> 5 new members joined today
@@ -132,8 +131,9 @@
                   </li>
                 </ul>
               </li>
+              --}}
               <li class="footer"><a href="#">View all</a></li>
-            </ul>
+            </ul> 
           </li>
           <!-- Tasks: style can be found in dropdown.less -->
           <li class="dropdown tasks-menu">

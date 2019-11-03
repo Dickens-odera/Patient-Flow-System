@@ -70,7 +70,7 @@
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('pharmacists.patient.transactions.all') }}"><i class="fa fa-circle-o"></i>All</a></li>
                 <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Complete</a></li>
               </ul>
             </li>
